@@ -3,6 +3,7 @@
 ddip dev
 
 im mac from seung
+and im window from seung
 
 ## Getting Started
 
