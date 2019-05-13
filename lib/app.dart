@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'init.dart';
 import 'home.dart';
+import 'search.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,6 +13,16 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: TextTheme(
+          title: TextStyle(color: Colors.white),
+          headline: TextStyle(color: Colors.white),
+          body1: TextStyle(color: Colors.white),
+          body2: TextStyle(color: Colors.white),
+//          button: TextStyle(color: Colors.white),
+        ),
+//        buttonTheme: ButtonThemeData(
+//
+//        )
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
 
@@ -20,6 +31,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/init': (context) => InitPage(),
         '/home': (context) => HomePage(),
+        '/search': (context) => SearchPage(),
 
       },
     );

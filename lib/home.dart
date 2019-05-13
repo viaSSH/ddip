@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("main page"),
+        backgroundColor: Colors.orangeAccent,
       ),
       body: ListView(
         children: <Widget>[
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
 //          ),
         ],
       ),
+      backgroundColor: Colors.orangeAccent,
     );
   }
 }
@@ -67,7 +69,9 @@ class _CategorySectionState extends State<_CategorySection> {
         RaisedButton(
           child: Text('물품'),
           onPressed: () {
-
+            Navigator.pushNamed(context, '/search',
+              arguments: 'item'
+            );
           },
         ),
         RaisedButton(
