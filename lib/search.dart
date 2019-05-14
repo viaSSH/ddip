@@ -113,14 +113,26 @@ class _ItemSectionState extends State<_ItemSection> {
         GridView.count(
             crossAxisCount: 2,
           shrinkWrap: true,
+          childAspectRatio: 1.7/1,
           physics: ScrollPhysics(), // 스크롤 가능하게 해줌
           children: List.generate(5, (index) {
             return Card(
-              child: Text("aa", style: TextStyle(color: Colors.red),),
-//              child: ListTile(
-//
-//                title: Text("item $index"),
-//              )
+
+              child: InkWell(
+                splashColor: Colors.blue.withAlpha(30),
+                onTap: () {
+                  Navigator.pushNamed(context, '/detail',
+                      arguments: index
+                  );
+                },
+                child: Container(
+                  width: 200,
+                  height: 100,
+
+                  color: Colors.grey,
+                  child: Text("card" ),
+                ),
+              ),
             );
           }),
         )
