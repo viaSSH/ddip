@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+
 class DetailPage extends StatefulWidget {
 
   @override
@@ -36,12 +38,41 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
+class NewItem {
+  bool isExpanded;
+  final String header;
+  final Widget body;
+  final Icon iconpic;
+  NewItem(this.isExpanded, this.header, this.body, this.iconpic);
+}
+
 class _ItemInformationSection extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ItemInformationSectionState();
 }
 
 class _ItemInformationSectionState extends State<_ItemInformationSection> {
+
+  List<NewItem> itemMoreDetail = <NewItem>[
+    NewItem(
+        false,
+        '더보기',
+        Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey
+              ),
+              child: Column(
+                  children: <Widget>[
+                    Text("children", style: TextStyle(color: Colors.red),),
+                  ]),
+            )
+        ),
+    Icon(Icons.info_outline)
+    ),
+
+  ];
 
   Widget build(BuildContext context) {
     return Column(
@@ -82,7 +113,45 @@ class _ItemInformationSectionState extends State<_ItemInformationSection> {
         RaisedButton(
           child: Text("더보기 아직안함"),
           onPressed: (){},
-        )
+        ),
+
+// expasion패널에서 바탕 색상이 잘 안바뀜 코드 수정 필요 TODO
+
+//        Container(
+////          color: Colors.red,
+//          decoration: BoxDecoration(color: Colors.red),
+//          child: ExpansionPanelList(
+//            expansionCallback: (int index, bool isExpanded) {
+//              setState(() {
+//                itemMoreDetail[index].isExpanded = !itemMoreDetail[index].isExpanded;
+//              });
+//            },
+//            children: itemMoreDetail.map((NewItem item) {
+//              return ExpansionPanel(
+//                headerBuilder: (BuildContext context, bool isExpanded) {
+//                  return ListTile(
+////                    leading: item.iconpic,
+//                      title: Text(
+//                        item.header,
+//                        textAlign: TextAlign.center,
+//                        style: TextStyle(
+//                          fontSize: 20.0,
+//                          fontWeight: FontWeight.w400,
+//                        ),
+//
+//                      ),
+//
+//                  );
+//                },
+//
+//                canTapOnHeader: true,
+//                isExpanded: item.isExpanded,
+//                body: item.body,
+//
+//              );
+//            }).toList(),
+//          ),
+//        ),
 
 
       ],

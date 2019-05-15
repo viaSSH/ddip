@@ -16,6 +16,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("main page"),
         backgroundColor: Colors.orangeAccent,
+        actions: <Widget>[
+          Container(
+            margin: EdgeInsets.all(8.0),
+            child: RaisedButton(
+              padding: EdgeInsets.all(4.0),
+              child: Text("물건대여신청"),
+              onPressed: (){
+                Navigator.pushNamed(context, '/addItem');
+              },
+            ),
+          )
+        ],
       ),
       body: ListView(
         children: <Widget>[
@@ -31,6 +43,37 @@ class _HomePageState extends State<HomePage> {
 //          ),
         ],
       ),
+      drawer: Drawer(
+
+        child: Container(
+          color: Colors.indigo,
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+                child: Text("aaa"),
+                decoration: BoxDecoration(
+                  color: Colors.blue
+                ),
+              ),
+              ListTile(
+                title: Text("마이페이지"),
+                onTap: () {
+                  Navigator.pushNamed(context, '/myPage');
+
+                },
+              ),
+              ListTile(
+                title: Text("로그아웃"),
+                onTap: () {
+                  Navigator.pushNamed(context, '/init');
+
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+
       backgroundColor: Colors.orangeAccent,
     );
   }

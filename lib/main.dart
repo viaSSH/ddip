@@ -3,6 +3,8 @@ import 'init.dart';
 import 'home.dart';
 import 'search.dart';
 import 'detail.dart';
+import 'addItem.dart';
+import 'myPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/search': (context) => SearchPage(),
         '/detail': (context) => DetailPage(),
+        '/addItem': (context) => AddItemPage(),
+        '/myPage': (context) => MyPage(),
 
       },
     );
