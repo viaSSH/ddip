@@ -89,8 +89,8 @@ class _BannerSectionState extends State<_BannerSection> {
 
   Widget build(BuildContext context) {
     return Image.network(
-      'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/ddip_logo.PNG?alt=media&token=5fc6b17a-9cf5-4b3f-957f-b59d19b81a8b'
-    );
+        'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2'
+        ,height: 100.0,width:100.0);
   }
 }
 
