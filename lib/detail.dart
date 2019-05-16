@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
+
 
 
 
@@ -190,15 +192,24 @@ class _ActionButtonSectionSatte extends State<_ActionButtonSection> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)
             ),
-            child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
-            onPressed: (){
-              Navigator.pushNamed(context, '/check',
-              arguments: 'item');
+          onPressed: () async {
+            final List<DateTime> picked = await DateRagePicker.showDatePicker(
+                context: context,
+                initialFirstDate: new DateTime.now(),
+                initialLastDate: new DateTime.now(),
+                firstDate: new DateTime(2015),
+                lastDate: new DateTime(2020),
+            );
+            if (picked != null && picked.length == 2) {
+              print(picked);
             }
-            ,
+          },
+              child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
           ),
+
           SizedBox(width:10),
           MaterialButton(
+
             color: Colors.orange[200],
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)

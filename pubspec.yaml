@@ -29,7 +29,7 @@ dependencies:
   firebase_storage: ^2.1.1+1
   image_picker: ^0.6.0+1
 #  cloud_firestore: ^0.8.2
-
+  date_range_picker: ^1.0.3
 #  cupertino_icons: ^0.1.2
 
 dev_dependencies:

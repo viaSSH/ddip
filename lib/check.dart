@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 class InitPage extends StatefulWidget {
 
   @override
