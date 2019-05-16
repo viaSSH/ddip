@@ -111,7 +111,7 @@ class _CategorySectionState extends State<_CategorySection> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          RaisedButton(
+          MaterialButton(
             child: Text('물품',style: TextStyle(color: Colors.white)),
             color: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
@@ -123,7 +123,7 @@ class _CategorySectionState extends State<_CategorySection> {
               );
             },
           ),
-          RaisedButton(
+          MaterialButton(
             child: Text('사람',style: TextStyle(color: Colors.white)),
             color: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
@@ -133,7 +133,7 @@ class _CategorySectionState extends State<_CategorySection> {
 
             },
           ),
-          RaisedButton(
+          MaterialButton(
             child: Text('공간',style: TextStyle(color: Colors.white)),
             color: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
@@ -143,7 +143,7 @@ class _CategorySectionState extends State<_CategorySection> {
 
             },
           ),
-          RaisedButton(
+          MaterialButton(
             child: Text('노하우',style: TextStyle(color: Colors.white)),
             color: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
