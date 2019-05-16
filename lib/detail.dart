@@ -191,7 +191,11 @@ class _ActionButtonSectionSatte extends State<_ActionButtonSection> {
                 borderRadius: BorderRadius.circular(10)
             ),
             child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
-            onPressed: (){},
+            onPressed: (){
+              Navigator.pushNamed(context, '/check',
+              arguments: 'item');
+            }
+            ,
           ),
           SizedBox(width:10),
           MaterialButton(
@@ -210,6 +214,21 @@ class _ActionButtonSectionSatte extends State<_ActionButtonSection> {
   }
 }
 
+//Future<Null> _selectDate2(BuildContext context) async {
+//  final DateTime picked = await showDatePicker(
+//      context: context,
+//      initialDate: _date2,
+//      firstDate: new DateTime(2016),
+//      lastDate: new DateTime(2020)
+//  );
+//
+//  if(picked != null && picked != _date2){
+//    print("Date selected: ${_date2.toString()}");
+//    setState((){
+//      _date2 = picked;
+//    });
+//  }
+//}
 class _ReplyListSection extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ReplyListSectionState();
