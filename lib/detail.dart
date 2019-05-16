@@ -17,7 +17,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Color.fromARGB(255, 25, 14, 78),
         title: Text("abcdef"),
         actions: <Widget>[
           IconButton(
@@ -25,14 +25,17 @@ class _DetailPageState extends State<DetailPage> {
           )
         ],
       ),
-      backgroundColor: Colors.orangeAccent,
-      body: ListView(
-        children: <Widget>[
-          _ItemInformationSection(),
+      backgroundColor: Color.fromARGB(255, 25, 14, 78),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: ListView(
+          children: <Widget>[
+            _ItemInformationSection(),
 //          _ActionButtonSection(),
-          _ReplyListSection(),
-          _RelatedItemSection(),
-        ],
+            _ReplyListSection(),
+            _RelatedItemSection(),
+          ],
+        ),
       ),
     );
   }
@@ -83,26 +86,33 @@ class _ItemInformationSectionState extends State<_ItemInformationSection> {
 //          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             ClipRRect(
-              borderRadius: BorderRadius.circular(28.0),
+              borderRadius: BorderRadius.circular(180.0),
 //              child: Image.network(src),
               child: Container(
                 height: 100,
-                width: 150,
-                color: Colors.blue,
+                width: 100,
+                color: Colors.white,
               )
             ),
-            Column(
-              children: <Widget>[
-                Text("물건이름"),
-                Text("가격"),
-                Text("장소")
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0,8,8,8),
+              child: Container(
+                child: Column(
+                  children: <Widget>[
+                    Text("물건이름"),
+                    Text("가격"),
+                    Text("장소")
+                  ],
+                ),
+              ),
             ),
 
           ],
         ),
         _ActionButtonSection(),
-        Text("Few days ago I came here to find a way to dynamically change height when images are loaded from internet and using childAspectRatio cannot do that because its apply to all widget in GridView(same height for each)."
+        Padding(
+          padding: const EdgeInsets.fromLTRB(15.0,8,8,8),
+          child: Text("Few days ago I came here to find a way to dynamically change height when images are loaded from internet and using childAspectRatio cannot do that because its apply to all widget in GridView(same height for each)."
 "This answer may help someone who want different height according to each and every widget content:"
 
  "   I found a package called Flutter Staggered GridView by Romain Rastel. Using this package we can do so many things check examples here."
@@ -110,6 +120,7 @@ class _ItemInformationSectionState extends State<_ItemInformationSection> {
   "  To get what we want we can use StaggeredGridView.count() and its property staggeredTiles: and for its value you can map all widget and apply StaggeredTile.fit(2)."
 
    " Example code:"),
+        ),
         RaisedButton(
           child: Text("더보기 아직안함"),
           onPressed: (){},
@@ -167,18 +178,34 @@ class _ActionButtonSection extends StatefulWidget {
 class _ActionButtonSectionSatte extends State<_ActionButtonSection> {
 
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        RaisedButton(
-          child: Text("거래하기"),
-          onPressed: (){},
-        ),
-        RaisedButton(
-          child: Text("대화하기"),
-          onPressed: (){},
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10.0,30,10.0,20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          MaterialButton(
+            color: Colors.orangeAccent,
+            minWidth: 250,
+            height: 40,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
+            onPressed: (){},
+          ),
+          SizedBox(width:10),
+          MaterialButton(
+            color: Colors.orange[200],
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            child: Text("대화하기",style: TextStyle(color: Colors.white, fontSize: 15)),
+            minWidth: 100,
+            height: 40,
+            onPressed: (){},
+          )
+        ],
+      ),
     );
   }
 }

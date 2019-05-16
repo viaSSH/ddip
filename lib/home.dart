@@ -18,12 +18,8 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           Container(
             margin: EdgeInsets.all(8.0),
-            child: MaterialButton(
+            child: FlatButton(
               padding: EdgeInsets.all(4.0),
-              color: Colors.orangeAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13)
-              ),
               child: Text("물건올리기", style: TextStyle(color: Colors.white)),
               onPressed: (){
                 Navigator.pushNamed(context, '/addItem');
@@ -60,6 +56,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 title: Text("마이페이지"),
+
                 onTap: () {
                   Navigator.pushNamed(context, '/myPage');
 
@@ -109,36 +106,55 @@ class _CategorySection extends StatefulWidget {
 class _CategorySectionState extends State<_CategorySection> {
 
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        RaisedButton(
-          child: Text('물품'),
-          onPressed: () {
-            Navigator.pushNamed(context, '/search',
-              arguments: 'item'
-            );
-          },
-        ),
-        RaisedButton(
-          child: Text('사람'),
-          onPressed: () {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          RaisedButton(
+            child: Text('물품',style: TextStyle(color: Colors.white)),
+            color: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, '/search',
+                arguments: 'item'
+              );
+            },
+          ),
+          RaisedButton(
+            child: Text('사람',style: TextStyle(color: Colors.white)),
+            color: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            onPressed: () {
 
-          },
-        ),
-        RaisedButton(
-          child: Text('공간'),
-          onPressed: () {
+            },
+          ),
+          RaisedButton(
+            child: Text('공간',style: TextStyle(color: Colors.white)),
+            color: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            onPressed: () {
 
-          },
-        ),
-        RaisedButton(
-          child: Text('노하우'),
-          onPressed: () {
+            },
+          ),
+          RaisedButton(
+            child: Text('노하우',style: TextStyle(color: Colors.white)),
+            color: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+            ),
+            onPressed: () {
 
-          },
-        ),
-      ],
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -156,127 +172,126 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
   Widget build(BuildContext context) {
     final double cardWidth = 100.0;
     final double cardHeight = 100.0;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      
-      children: <Widget>[
-        Text("물건"),
-        Container(
-          height: cardHeight,
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            children: <Widget>[
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 30, 15, 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("물건"),
+          Container(
+            height: cardHeight,
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
 
-            ],
+              ],
+            ),
           ),
-        ),
-        
-        Text("사람"),
-        Container(
-          height: cardHeight,
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            children: <Widget>[
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
 
-            ],
+          Text("사람"),
+          Container(
+            height: cardHeight,
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+
+              ],
+            ),
           ),
-        ),
-        
-        Text("공간"),
-        Container(
-          height: cardHeight,
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          child: ListView(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            children: <Widget>[
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
-              Container(
-                width: cardWidth,
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                color: Colors.blue,
-                child: Text("item"),
-              ),
 
-            ],
+          Text("공간"),
+          Container(
+            height: cardHeight,
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+                Container(
+                  width: cardWidth,
+                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+                  color: Colors.white,
+                  child: Text("item"),
+                ),
+
+              ],
+            ),
           ),
-        ),
 
 
-      ],
+        ],
+      ),
     );
 
   }

@@ -21,11 +21,14 @@ class _AddItemPageState extends State<AddItemPage> {
 //        title: Text("asd"),
         backgroundColor: Colors.orangeAccent,
       ),
-      body: ListView(
-        children: <Widget>[
-          Text("물건 대여 신청"),
-          _AddItemFormSection()
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: <Widget>[
+            Text("물건 대여 신청"),
+            _AddItemFormSection()
+          ],
+        ),
       ),
       backgroundColor: Colors.orangeAccent,
     );
