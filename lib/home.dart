@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -9,9 +10,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 25, 14, 78),
@@ -105,6 +112,8 @@ class _CategorySection extends StatefulWidget {
 
 class _CategorySectionState extends State<_CategorySection> {
 
+  DocumentReference docR = Firestore.instance.collection('Items').document();
+
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -130,7 +139,11 @@ class _CategorySectionState extends State<_CategorySection> {
                 borderRadius: BorderRadius.circular(10)
             ),
             onPressed: () {
-
+              print("test");
+              docR.setData({
+                'name': 'zz'
+              }
+              );
             },
           ),
           MaterialButton(
@@ -169,130 +182,145 @@ class _TopCategorySection extends StatefulWidget {
 
 class _TopCategorySectionState extends State<_TopCategorySection> {
 
+  var itemCate = ['goods', 'manpower', 'place', 'knowhow'];
+
   Widget build(BuildContext context) {
     final double cardWidth = 100.0;
     final double cardHeight = 100.0;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 30, 15, 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("물건"),
-          Container(
-            height: cardHeight,
-            margin: EdgeInsets.symmetric(vertical: 20.0),
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
 
-              ],
-            ),
-          ),
-
-          Text("사람"),
-          Container(
-            height: cardHeight,
-            margin: EdgeInsets.symmetric(vertical: 20.0),
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-
-              ],
-            ),
-          ),
-
-          Text("공간"),
-          Container(
-            height: cardHeight,
-            margin: EdgeInsets.symmetric(vertical: 20.0),
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-                Container(
-                  width: cardWidth,
-                  margin: EdgeInsets.symmetric(horizontal: 8.0),
-                  color: Colors.white,
-                  child: Text("item"),
-                ),
-
-              ],
-            ),
-          ),
-
-
-        ],
-      ),
+    return StreamBuilder(
+      stream: Firestore.instance.collection('Items').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) return new Text('Loading...');
+        return new Column(
+          children: snapshot.data.documents.map((document) {
+            return  Text(document['name']);
+          }).toList(),
+        );
+      },
     );
+//
+//    return Padding(
+//      padding: const EdgeInsets.fromLTRB(15, 30, 15, 10),
+//      child: Column(
+//        mainAxisAlignment: MainAxisAlignment.center,
+//        crossAxisAlignment: CrossAxisAlignment.start,
+//        children: <Widget>[
+//          Text("물건"),
+//          Container(
+//            height: cardHeight,
+//            margin: EdgeInsets.symmetric(vertical: 20.0),
+//            child: ListView(
+//              shrinkWrap: true,
+//              scrollDirection: Axis.horizontal,
+//              children: <Widget>[
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//
+//              ],
+//            ),
+//          ),
+//
+//          Text("사람"),
+//          Container(
+//            height: cardHeight,
+//            margin: EdgeInsets.symmetric(vertical: 20.0),
+//            child: ListView(
+//              shrinkWrap: true,
+//              scrollDirection: Axis.horizontal,
+//              children: <Widget>[
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//
+//              ],
+//            ),
+//          ),
+//
+//          Text("공간"),
+//          Container(
+//            height: cardHeight,
+//            margin: EdgeInsets.symmetric(vertical: 20.0),
+//            child: ListView(
+//              shrinkWrap: true,
+//              scrollDirection: Axis.horizontal,
+//              children: <Widget>[
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//                Container(
+//                  width: cardWidth,
+//                  margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                  color: Colors.white,
+//                  child: Text("item"),
+//                ),
+//
+//              ],
+//            ),
+//          ),
+//
+//
+//        ],
+//      ),
+//    );
 
   }
 }
