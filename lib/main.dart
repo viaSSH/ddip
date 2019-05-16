@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
 //        buttonTheme: ButtonThemeData(
 //
 //        )
+        fontFamily: 'Dohyun',
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
 

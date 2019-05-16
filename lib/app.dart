@@ -18,11 +18,11 @@ class MyApp extends StatelessWidget {
           headline: TextStyle(color: Colors.white),
           body1: TextStyle(color: Colors.white),
           body2: TextStyle(color: Colors.white),
-//          button: TextStyle(color: Colors.white),
         ),
 //        buttonTheme: ButtonThemeData(
 //
 //        )
+       fontFamily: 'Dohyun',
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
 
