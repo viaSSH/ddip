@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 final itemCategoryController =  TextEditingController();
+final itemNameController =  TextEditingController();
 final itemPriceController =  TextEditingController();
 final itemLocationController =  TextEditingController();
 final itemDateController =  TextEditingController();
@@ -44,7 +50,63 @@ class _AddItemFormSection extends StatefulWidget {
 
 class _AddItemFormSectionState extends State<_AddItemFormSection> {
 
+  FirebaseStorage _storage = FirebaseStorage.instance;
+
   final _addItemFormKey = GlobalKey<FormState>();
+  String imageUrl;
+
+  File _image;
+
+  void uploadItem() {
+    DocumentReference docR = Firestore.instance.collection('Items').document();
+
+    docR.setData({
+      'category': _SelectedCategory,
+      'name': itemNameController.text,
+      'price': itemPriceController.text,
+      'location': itemLocationController.text,
+      'description': itemContentController.text,
+
+    }
+    );
+
+    itemNameController.clear();
+    itemPriceController.clear();
+    itemLocationController.clear();
+    itemContentController.clear();
+
+  }
+
+  void uploadPic() async {
+
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    print("start photo ");
+    setState(() {
+      _image = image;
+    });
+    //Create a reference to the location you want to upload to in firebase
+    StorageReference reference = _storage.ref().child("/items/"+DateTime.now().toString() + ".jpg");
+
+    //Upload the file to firebase
+    StorageUploadTask uploadTask = reference.putFile(image);
+
+    // Waits till the file is uploaded then stores the download url
+//    var downUrl = (await uploadTask.onComplete).ref.getDownloadURL();
+    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+    final String url = (await downloadUrl.ref.getDownloadURL());
+//    return downUrl.toString();
+
+    imageUrl = url.toString();
+//    setState(() {
+//      _test = url.toString();
+//    });
+//    print("this" + url);
+
+  }
+
+  List<String> _categories = <String>['물건', '사람', '공간', '노하우'];
+//  List _myCategories = [{'kor': '물건', 'en': 'goods'}, {'kor': '사람', 'id': 'manpower'}];
+  String _SelectedCategory = '물건';
 
   Widget build(BuildContext context) {
     return Container(
@@ -70,20 +132,90 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("물품종류")
                     ),
+
                     Flexible(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          style: new TextStyle(color: Colors.white),
-                          controller: itemCategoryController,
-                          validator: (value) {
-                            if(value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                          },
-                        ),
+                      child: FormField(
+                        builder: (FormFieldState state) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 12.0),
+                            child: Theme(
+                              data: Theme.of(context).copyWith(canvasColor: Colors.orangeAccent),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+
+                                    value: _SelectedCategory,
+//                                  style: TextStyle(color: Colors.red),
+                                    isDense: true,
+
+                                    onChanged: (String newValue) {
+                                      setState(() {
+//                                  newContact.favoriteColor = newValue;
+                                        _SelectedCategory = newValue;
+                                        state.didChange(newValue);
+                                      });
+                                    },
+                                    items: _categories.map((String value) {
+//                                  items: _myCategories.map( {
+                                      return DropdownMenuItem(
+                                        value: value,
+                                        child: Container(
+//                                        color: Colors.blue,
+                                        width: 200,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                            ),
+                          );
+                        },
                       ),
                     ),
+
+//                    Flexible(
+//                      child: Container(
+//                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+//                        child: TextFormField(
+//                          style: new TextStyle(color: Colors.white),
+//                          controller: itemCategoryController,
+//                          validator: (value) {
+//                            if(value.isEmpty) {
+//                              return 'Please enter some text';
+//                            }
+//                          },
+//                        ),
+//                      ),
+//                    ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+
+                children: <Widget>[
+                  Container(
+                      width: 60,
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("물품명")
+                  ),
+                  Flexible(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextFormField(
+                        style: new TextStyle(color: Colors.white),
+                        controller: itemNameController,
+                        validator: (value) {
+                          if(value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Row(
@@ -198,7 +330,10 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                       margin: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text("사진첨부")
                   ),
-                  IconButton(icon: Icon(Icons.camera_alt,color: Colors.white))
+                  IconButton(
+                      icon: Icon(Icons.camera_alt,color: Colors.white),
+                      onPressed: uploadPic,
+                  )
                 ],
               ),
               MaterialButton(
@@ -207,11 +342,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/search',
-                      arguments: 'item'
-                  );
-                },
+                onPressed: uploadItem,
               ),
             ],
           ),

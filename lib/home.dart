@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:async/async.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -174,31 +175,105 @@ class _CategorySectionState extends State<_CategorySection> {
 
 // 카테고리 이동부분 끝
 
-// 배너 부분 시작
+// 카테고리 인기리스트 시작
 class _TopCategorySection extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TopCategorySectionState();
 }
 
+Stream<QuerySnapshot> stream1 = Firestore.instance.collection('Items').where('category', isEqualTo: 'goods').snapshots();
+Stream<QuerySnapshot> stream2 = Firestore.instance.collection('Items').where('category', isEqualTo: 'goods').snapshots();
+var mygroup = StreamZip([stream1, stream2]);
+
+//var mygroup = StreamGroup();
+
 class _TopCategorySectionState extends State<_TopCategorySection> {
 
   var itemCate = ['goods', 'manpower', 'place', 'knowhow'];
+
+
+  StreamZip bothStreams = StreamZip([stream1, stream2]);
+
+
+//  mygroup.add(stream1);
+//  test.add(stream2);
+
+
+//    var mygroup = StreamGroup.merge([stream1, stream2]);
+
+
+//  StreamGroup streamGroup = StreamGroup([stream1, stream2]);
+//  Firestore.instance.collection('Items').snapshots();
 
   Widget build(BuildContext context) {
     final double cardWidth = 100.0;
     final double cardHeight = 100.0;
 
-    return StreamBuilder(
-      stream: Firestore.instance.collection('Items').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) return new Text('Loading...');
-        return new Column(
-          children: snapshot.data.documents.map((document) {
-            return  Text(document['name']);
-          }).toList(),
-        );
-      },
-    );
+
+
+//    bothStreams.listen((snaps) {
+//      DocumentSnapshot snapshot1 = snaps[0];
+//      DocumentSnapshot snapshot2 = snaps[1];
+//
+//
+//
+//
+//      print(snapshot1['name']);
+////      return Text(snapshot1['name']);
+//    });
+
+//    return Text("asd");
+
+//      return StreamBuilder<List<QuerySnapshot>>(
+//        stream: mygroup,
+//        builder: (BuildContext context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+//          print(snapshot);
+//          if(snapshot.hasData) print("have");
+//          else print("not");
+//          return Text("aa");
+//        },
+//
+//      );
+
+//      return StreamBuilder<QuerySnapshot>(
+//        stream: bothStreams,
+////      stream:  Firestore.instance.collection('Items').snapshots(),
+//        builder: (context, snapshot) {
+////          print(snapshot.data);
+//          var userD = snapshot.data;
+//
+//          var test = userD.documents;
+//
+//          return Column(
+//            children: snapshot.data.documents.map((document) => Text(document['name']) ).toList(),
+//          );
+//
+//          return Text("asdasdasd");
+//        },
+//      );
+
+  return Text("어케짜야될지모르겟다 ㅜㅜ");
+
+
+
+//    return StreamBuilder<List<QuerySnapshot>>(
+//      stream: Firestore.instance.collection('Items').snapshots(),
+//      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//        if (!snapshot.hasData) return new Text('Loading...');
+//        return new Column(
+//          children: snapshot.data.documents.map((document) {
+//            return  Text(document['name']);
+//          }).toList(),
+//        );
+//      },
+//    );
+//      return StreamBuilder<List<QuerySnapshot>>(
+//        stream: streamGroup,
+//        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshotList) {
+////          DocumentSnapshot snapshot1 = snapshotList[0];
+//
+//        },
+//      );
 //
 //    return Padding(
 //      padding: const EdgeInsets.fromLTRB(15, 30, 15, 10),
