@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SearchPage extends StatefulWidget {
 
@@ -139,43 +140,89 @@ class _ItemSection extends StatefulWidget {
 
 class _ItemSectionState extends State<_ItemSection> {
 
+
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        children: <Widget>[
-          Text("공구",style: TextStyle(fontSize: 20.0, color:Color.fromARGB(255,255,219,181))),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            childAspectRatio: 1.7/1,
-            physics: ScrollPhysics(), // 스크롤 가능하게 해줌
-            children: List.generate(5, (index) {
-              return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/detail',
-                          arguments: index
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: new BorderRadius.circular(10.0),
-                      ),
-                      width: 180,
-                      height: 100,
-                      child: Text("card"),
-                    ),
-                  ),
-                ),
-              );
-            }),
-          )
-        ],
-      ),
+    var _selectedCategory = '물건';
+    var _selectedSubCategory = '공구';
+
+    return StreamBuilder<QuerySnapshot>(
+//      stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: '공구').snapshots(),
+        stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: _selectedSubCategory).snapshots(),
+      builder: (context, snapshot) {
+
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text("공구",style: TextStyle(fontSize: 20.0, color:Color.fromARGB(255,255,219,181))),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                childAspectRatio: 2/3,
+                physics: ScrollPhysics(), // 스크롤 가능하게 해줌
+                children: snapshot.data.documents.map((data) => _buildListItem(context, data)).toList(),
+              )
+            ],
+          ),
+        );
+      }
     );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Container(
+            width: 180,
+            height: 100,
+            decoration: BoxDecoration(
+              image: DecorationImage(image: NetworkImage(data['imageUrl']),
+              fit: BoxFit.cover
+              ),
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.all(8.0),
+            child: Text(data['name'])
+        ),
+        Container(
+          margin: EdgeInsets.all(8.0),
+          child: data['available'] ? Text("대여가능") : Text("대여중"),
+        )
+
+      ],
+    );
+//    return Padding(
+//      padding: const EdgeInsets.all(5.0),
+//      child: Column(
+//        children: <Widget>[
+//          Card(
+//            child: InkWell(
+//              splashColor: Colors.blue.withAlpha(30),
+////          onTap: () {
+////            Navigator.pushNamed(context, '/detail',
+////                arguments: index
+////            );
+////          },
+//              child: Container(
+//                decoration: BoxDecoration(
+//                  borderRadius: new BorderRadius.circular(10.0),
+//                ),
+//                width: 180,
+//                height: 100,
+//                child: Text("card"),
+//              ),
+//            ),
+//          ),
+//        ],
+//      ),
+//    );
   }
 }

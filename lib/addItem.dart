@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 final itemCategoryController =  TextEditingController();
+final itemSubCategoryController =  TextEditingController();
 final itemNameController =  TextEditingController();
 final itemPriceController =  TextEditingController();
 final itemLocationController =  TextEditingController();
@@ -62,11 +63,13 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 
     docR.setData({
       'category': _SelectedCategory,
+      'subCategory': itemSubCategoryController.text,
       'name': itemNameController.text,
       'price': itemPriceController.text,
       'location': itemLocationController.text,
       'description': itemContentController.text,
       'imageUrl': imageUrl,
+      'available': true,
 
     }
     );
@@ -191,6 +194,31 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //                        ),
 //                      ),
 //                    ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+
+                children: <Widget>[
+                  Container(
+                      width: 60,
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("카테고리")
+                  ),
+                  Flexible(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextFormField(
+                        style: new TextStyle(color: Colors.white),
+                        controller: itemSubCategoryController,
+                        validator: (value) {
+                          if(value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
               Row(
