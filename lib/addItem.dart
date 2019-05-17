@@ -66,6 +66,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'price': itemPriceController.text,
       'location': itemLocationController.text,
       'description': itemContentController.text,
+      'imageUrl': imageUrl,
 
     }
     );
@@ -80,7 +81,6 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
   void uploadPic() async {
 
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print("start photo ");
     setState(() {
       _image = image;
     });
@@ -336,6 +336,26 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   )
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Center(
+                    child: _image == null
+                        ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0),)
+                        : Container(
+                          height: 100,
+                          width:  160,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(_image),
+                          fit: BoxFit.fitHeight
+                        )
+                      ),
+                        )
+                  ),
+//                  Image.file(_image)
+                ],
+              ),
               MaterialButton(
                 child: Text('대여등록',style: TextStyle(color: Colors.white)),
                 color: Colors.orangeAccent,
@@ -344,6 +364,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                 ),
                 onPressed: uploadItem,
               ),
+
             ],
           ),
         ),
