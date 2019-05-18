@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "926936146796-brnlffdg7alesldn52id1g0196ju5e0h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ddip.myddip",
+            "certificate_hash": "8ba038a0d3e2a59738186e6017fe86e399522b68"
+          }
+        },
+        {
           "client_id": "926936146796-vo5pr3f3fgeuv3nu2evecvq2hqepvhbm.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -32,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "926936146796-gqrpkbsrip239d5vk0hqu5iq8ro5vko2.apps.googleusercontent.com",
+              "client_id": "926936146796-l61g203ao77agm7o9i0kvq1un75rm13h.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "ddip.handong.edu"
+                "bundle_id": "com.ddip.myddip"
               }
             }
           ]
