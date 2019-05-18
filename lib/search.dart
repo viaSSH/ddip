@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'detail.dart';
 class SearchPage extends StatefulWidget {
-
+  final FirebaseUser user;
+  SearchPage ({Key key, @required this.user});
   @override
   _SearchPageState createState() => _SearchPageState();
 
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final FirebaseUser user;
+  _SearchPageState({Key key, @required this.user});
   final TextEditingController _searchQuery = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -139,8 +143,9 @@ class _ItemSection extends StatefulWidget {
 }
 
 class _ItemSectionState extends State<_ItemSection> {
-
-
+  // TODO: Add a variable for Category (104)
+  final FirebaseUser user;
+  _ItemSectionState({Key key, @required this.user});
   Widget build(BuildContext context) {
     var _selectedCategory = '물건';
     var _selectedSubCategory = '공구';
@@ -170,31 +175,38 @@ class _ItemSectionState extends State<_ItemSection> {
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: Container(
-            width: 180,
-            height: 100,
-            decoration: BoxDecoration(
-              image: DecorationImage(image: NetworkImage(data['imageUrl']),
-              fit: BoxFit.cover
+          borderRadius: BorderRadius.circular(20.0),
+            child: Container(
+              width: 180,
+              height: 100,
+              child: ConstrainedBox(
+                constraints: BoxConstraints.expand(),
+                child: Ink.image(
+                  image: NetworkImage(document['imageUrl']),
+//                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
+                  child: InkWell( onTap: (){
+                    Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
+                  },
+                  ),
+                ),
               ),
             ),
-          ),
         ),
         Container(
           margin: EdgeInsets.all(8.0),
-            child: Text(data['name'])
+            child: Text(document['name'])
         ),
         Container(
           margin: EdgeInsets.all(8.0),
-          child: data['available'] ? Text("대여가능") : Text("대여중"),
+          child: document['available'] ? Text("대여가능") : Text("대여중"),
         )
 
       ],
