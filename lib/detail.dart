@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
-
-
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DetailPage extends StatefulWidget {
-
+  FirebaseUser user;
+  DocumentSnapshot document;
+  DetailPage ({Key key, @required this.document, @required this.user});
   @override
-  _DetailPageState createState() => _DetailPageState();
-
+  _DetailPageState createState() => new _DetailPageState(document:document,user:user);
 }
 
 class _DetailPageState extends State<DetailPage> {
+  DocumentSnapshot document;
+  FirebaseUser user;
+  _DetailPageState({Key key, @required this.document, @required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class _DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 25, 14, 78),
-        title: Text("abcdef"),
+        title: Text("< "+document['category']+" > "+document['name']),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.share)
@@ -28,21 +31,113 @@ class _DetailPageState extends State<DetailPage> {
         ],
       ),
       backgroundColor: Color.fromARGB(255, 25, 14, 78),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: ListView(
-          children: <Widget>[
-            _ItemInformationSection(),
-//          _ActionButtonSection(),
-            _ReplyListSection(),
-            _RelatedItemSection(),
-          ],
-        ),
-      ),
+      body:
+      _buildBody(context),
+//      Padding(
+//        padding: const EdgeInsets.all(15.0),
+//        child: ListView(
+//          children: <Widget>[
+//            _ActionButtonSection(),
+//            _ReplyListSection(),
+//            _RelatedItemSection(),
+//          ],
+//        ),
+//      ),
     );
   }
-}
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Items').where('name',isEqualTo: document['name']).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
+  }
 
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    return
+    Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+      children:<Widget>[
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(180.0),
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: NetworkImage(document['imageUrl']),
+                      fit: BoxFit.cover
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15.0,5,5,10),
+              child: Column(
+                children: <Widget>[
+
+                  Row(children: <Widget>[
+
+                    Text("물건이름",style:TextStyle(color:Colors.grey)),
+                    Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: Text(document['name'])
+                    ),
+                  ]),
+                  Row(children: <Widget>[
+                    Text("가격",style:TextStyle(color:Colors.grey)),
+                    Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: Text(document['price'])
+                    ),]),
+                  Row(children: <Widget>[
+                    Text("장소",style:TextStyle(color:Colors.grey)),
+                    Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: Text(document['location'])
+                    ),]),
+                ]
+          ),
+            ),
+
+    ]
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(20.0,8,20,8),
+        child: Divider(height:30, color: Colors.grey),
+      ),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10.0,10,10,10),
+        child: Container(
+            margin: EdgeInsets.all(8.0),
+            child: Text(document['description'])
+        ),
+      ),
+      RaisedButton(
+        child: Text("더보기 아직안함"),
+        onPressed: (){},
+      ),
+      _ActionButtonSection(),
+      _ReplyListSection(),
+      _RelatedItemSection(),
+    ]
+    );
+  }
+
+}
 class NewItem {
   bool isExpanded;
   final String header;
@@ -51,133 +146,12 @@ class NewItem {
   NewItem(this.isExpanded, this.header, this.body, this.iconpic);
 }
 
-class _ItemInformationSection extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ItemInformationSectionState();
-}
-
-class _ItemInformationSectionState extends State<_ItemInformationSection> {
-
-  List<NewItem> itemMoreDetail = <NewItem>[
-    NewItem(
-        false,
-        '더보기',
-        Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey
-              ),
-              child: Column(
-                  children: <Widget>[
-                    Text("children", style: TextStyle(color: Colors.red),),
-                  ]),
-            )
-        ),
-    Icon(Icons.info_outline)
-    ),
-
-  ];
-
-  Widget build(BuildContext context) {
-    return Column(
-//      mainAxisAlignment: MainAxisAlignment.start,
-//      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Row(
-//          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(180.0),
-//              child: Image.network(src),
-              child: Container(
-                height: 100,
-                width: 100,
-                color: Colors.white,
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15.0,8,8,8),
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Text("물건이름"),
-                    Text("가격"),
-                    Text("장소")
-                  ],
-                ),
-              ),
-            ),
-
-          ],
-        ),
-        _ActionButtonSection(),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15.0,8,8,8),
-          child: Text("Few days ago I came here to find a way to dynamically change height when images are loaded from internet and using childAspectRatio cannot do that because its apply to all widget in GridView(same height for each)."
-"This answer may help someone who want different height according to each and every widget content:"
-
- "   I found a package called Flutter Staggered GridView by Romain Rastel. Using this package we can do so many things check examples here."
-
-  "  To get what we want we can use StaggeredGridView.count() and its property staggeredTiles: and for its value you can map all widget and apply StaggeredTile.fit(2)."
-
-   " Example code:"),
-        ),
-        RaisedButton(
-          child: Text("더보기 아직안함"),
-          onPressed: (){},
-        ),
-
-// expasion패널에서 바탕 색상이 잘 안바뀜 코드 수정 필요 TODO
-
-//        Container(
-////          color: Colors.red,
-//          decoration: BoxDecoration(color: Colors.red),
-//          child: ExpansionPanelList(
-//            expansionCallback: (int index, bool isExpanded) {
-//              setState(() {
-//                itemMoreDetail[index].isExpanded = !itemMoreDetail[index].isExpanded;
-//              });
-//            },
-//            children: itemMoreDetail.map((NewItem item) {
-//              return ExpansionPanel(
-//                headerBuilder: (BuildContext context, bool isExpanded) {
-//                  return ListTile(
-////                    leading: item.iconpic,
-//                      title: Text(
-//                        item.header,
-//                        textAlign: TextAlign.center,
-//                        style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontWeight: FontWeight.w400,
-//                        ),
-//
-//                      ),
-//
-//                  );
-//                },
-//
-//                canTapOnHeader: true,
-//                isExpanded: item.isExpanded,
-//                body: item.body,
-//
-//              );
-//            }).toList(),
-//          ),
-//        ),
-
-
-      ],
-    );
-  }
-}
-
 class _ActionButtonSection extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _ActionButtonSectionSatte();
+  State<StatefulWidget> createState() => _ActionButtonSectionState();
 }
 
-class _ActionButtonSectionSatte extends State<_ActionButtonSection> {
+class _ActionButtonSectionState extends State<_ActionButtonSection> {
 
   Widget build(BuildContext context) {
     return Padding(
