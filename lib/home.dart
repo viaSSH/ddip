@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:async/async.dart';
-
+import 'detail.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class HomePage extends StatefulWidget {
-
+  final FirebaseUser user;
+  HomePage({Key key, @required this.user});
   @override
-  _HomePageState createState() => _HomePageState();
-
+  _HomePageState createState() => new _HomePageState(user:user);
 }
 
 class _HomePageState extends State<HomePage> {
-
-
-
-
-
+  final FirebaseUser user;
+  _HomePageState({Key key, @required this.user});
+  final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
+  DocumentReference docR = Firestore.instance.collection('Items').document();
+  var _category = ['물건', '사람', '공간', '노하우'];
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 25, 14, 78),
@@ -36,22 +34,55 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          _BannerSection(),
-          _CategorySection(),
-          _TopCategorySection(),
-//          Text("first page"),
-//          RaisedButton(
-//            child: Text("move to main page"),
-//            onPressed: () {
-//
-//            },
-//          ),
-        ],
+      body:
+      Column(
+          children: [
+          Image.network(
+          'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo_navy_ddip.png?alt=media&token=70f1d77e-bf9e-4c33-b370-d31fb59c6ffb',
+          height: 200.0,width:300.0),
+      Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children:[
+            for(var category in _category)
+            MaterialButton(
+              child: Text(category,style: TextStyle(color: Colors.white)),
+              color: Colors.orangeAccent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/search',
+                    arguments: category
+                );
+              },
+            ),
+            ]
+            ),
+        ),
+            Flexible(
+              child: StreamBuilder(
+                  stream:Firestore.instance.collection('Items').snapshots(),
+                  builder: (context, snapshot) {
+                    if(!snapshot.hasData) return const Text('Loading...');
+                    return Center(
+                      child: SizedBox(
+                          width:390.0,
+                          child:GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) =>
+                                _buildGridCards(context, snapshot.data.documents[index]),
+                          )
+                      ),
+                    );
+                  }
+              ),
+            ),
+          ]
       ),
       drawer: Drawer(
-
         child: Container(
           color: Colors.indigo,
           child: ListView(
@@ -85,93 +116,82 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color.fromARGB(255, 25, 14, 78),
     );
   }
-}
-
-// 배너 부분 시작
-class _BannerSection extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _BannerSectionState();
-}
-
-class _BannerSectionState extends State<_BannerSection> {
-
-  Widget build(BuildContext context) {
-    return Image.network(
-        'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo_navy_ddip.png?alt=media&token=70f1d77e-bf9e-4c33-b370-d31fb59c6ffb',
-        height: 150.0,width:150.0);
-  }
-}
-
-// 배너부분 끝
-
-
-// 카테고리 이동부분 시작
-class _CategorySection extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _CategorySectionState();
-}
-
-class _CategorySectionState extends State<_CategorySection> {
-
-  DocumentReference docR = Firestore.instance.collection('Items').document();
-
-  var _category = ['물건', '사람', '공간', '노하우'];
-
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _buildGridCards(BuildContext context, DocumentSnapshot document) {
+    return Card(
+      color:Color.fromARGB(255, 25, 14, 78),
+      // TODO: Adjust card heights (103)
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        // TODO: Center items on the card (103)
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          for(var category in _category)
-          MaterialButton(
-            child: Text(category,style: TextStyle(color: Colors.white)),
-            color: Colors.orangeAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,20,0,5),
+            child: Center(
+              child: GestureDetector(
+                onTap: (){
+//            print(data.documentID);
+                  Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Container(
+                    width: 180,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: NetworkImage(document['imageUrl']),
+                          fit: BoxFit.fill
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, '/search',
-                arguments: category
-              );
-            },
           ),
-//          MaterialButton(
-//            child: Text('사람',style: TextStyle(color: Colors.white)),
-//            color: Colors.orangeAccent,
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.circular(10)
-//            ),
-//            onPressed: () {
-//            },
+//          AspectRatio(
+//              aspectRatio: 23 / 11,
+//              child: document['imgurl']==null? Image.network(default_url) : Image.network(document['imgurl'])
 //          ),
-//          MaterialButton(
-//            child: Text('공간',style: TextStyle(color: Colors.white)),
-//            color: Colors.orangeAccent,
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.circular(10)
-//            ),
-//            onPressed: () {
-//
-//            },
-//          ),
-//          MaterialButton(
-//            child: Text('노하우',style: TextStyle(color: Colors.white)),
-//            color: Colors.orangeAccent,
-//            shape: RoundedRectangleBorder(
-//                borderRadius: BorderRadius.circular(10)
-//            ),
-//            onPressed: () {
-//
-//            },
-//          ),
+          Expanded(
+            child: Column(
+              // TODO: Align labels to the bottom and center (103)
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // TODO: Change innermost Column (103)
+              children: <Widget>[
+                // TODO: Handle overflowing labels (103)
+                // TODO(larche): Make headline6 when available
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10.0,10.0,3.0,0),
+                  child: Text(
+                    "물품명: "+
+                      document['name'],
+                      maxLines: 1,
+                      style:TextStyle(fontSize: 14.0, color: Colors.white)
+                  ),
+                ),
+                SizedBox(height: 2.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10.0,0,3.0,0),
+                  child: Row(
+                      children:[
+                        Text("가격: "+
+                            document['price'].toString(),
+                            style:TextStyle(fontSize: 14.0, color: Colors.white)
+                        ),
+                      ]
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+
         ],
       ),
     );
   }
 }
 
-// 카테고리 이동부분 끝
 
 // 카테고리 인기리스트 시작
 class _TopCategorySection extends StatefulWidget {
