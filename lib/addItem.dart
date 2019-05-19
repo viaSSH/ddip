@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 final itemCategoryController =  TextEditingController();
 final itemSubCategoryController =  TextEditingController();
@@ -50,12 +52,13 @@ class _AddItemFormSection extends StatefulWidget {
 }
 
 class _AddItemFormSectionState extends State<_AddItemFormSection> {
-
+  List<Asset> images = List<Asset>();
+  String _error;
+  final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
   FirebaseStorage _storage = FirebaseStorage.instance;
 
   final _addItemFormKey = GlobalKey<FormState>();
   String imageUrl;
-
   File _image;
 
   void uploadItem() {
@@ -68,7 +71,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'price': itemPriceController.text,
       'location': itemLocationController.text,
       'description': itemContentController.text,
-      'imageUrl': imageUrl,
+      'imageUrl': imageUrl==null? default_url:imageUrl,
       'available': true,
 
     }
@@ -80,8 +83,45 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
     itemContentController.clear();
 
   }
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(images.length, (index) {
+        Asset asset = images[index];
+        return AssetThumb(
+          asset: asset,
+          width: 20,
+          height: 20,
+        );
+      }),
+    );
+  }
+  Future<void> loadAssets() async {
+    setState(() {
+      images = List<Asset>();
+    });
+    List<Asset> resultList;
+    String error;
 
-  void uploadPic() async {
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 300,
+      );
+    } on PlatformException catch (e) {
+      error = e.message;
+    }
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      images = resultList;
+      if (error == null) _error = 'No Error Dectected';
+    });
+  }
+
+    void uploadPic() async {
 
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -97,6 +137,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //    var downUrl = (await uploadTask.onComplete).ref.getDownloadURL();
     final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
     final String url = (await downloadUrl.ref.getDownloadURL());
+
 //    return downUrl.toString();
 
     imageUrl = url.toString();
@@ -108,6 +149,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
   }
 
   List<String> _categories = <String>['물건', '사람', '공간', '노하우'];
+
 //  List _myCategories = [{'kor': '물건', 'en': 'goods'}, {'kor': '사람', 'id': 'manpower'}];
   String _SelectedCategory = '물건';
 
@@ -360,30 +402,33 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   ),
                   IconButton(
                       icon: Icon(Icons.camera_alt,color: Colors.white),
-                      onPressed: uploadPic,
+                      onPressed: loadAssets,
+                  ),
+                  Expanded(
+                    child: buildGridView(),
                   )
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Center(
-                    child: _image == null
-                        ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0),)
-                        : Container(
-                          height: 100,
-                          width:  160,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(_image),
-                          fit: BoxFit.fitHeight
-                        )
-                      ),
-                        )
-                  ),
-//                  Image.file(_image)
-                ],
-              ),
+//              Row(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  Center(
+//                    child: _image == null
+//                        ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0),)
+//                        : Container(
+//                          height: 100,
+//                          width:  160,
+//                      decoration: BoxDecoration(
+//                        image: DecorationImage(
+//                          image: FileImage(_image),
+//                          fit: BoxFit.fitHeight
+//                        )
+//                      ),
+//                        )
+//                  ),
+////                  Image.file(_image)
+//                ],
+//              ),
               MaterialButton(
                 child: Text('대여등록',style: TextStyle(color: Colors.white)),
                 color: Colors.orangeAccent,

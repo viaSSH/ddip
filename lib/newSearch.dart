@@ -11,7 +11,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 
 }
-
+final _searchController = TextEditingController();
 class _SearchPageState extends State<SearchPage> {
   final FirebaseUser user;
   _SearchPageState({Key key, @required this.user});
@@ -21,22 +21,22 @@ class _SearchPageState extends State<SearchPage> {
   var _subCategory = {'물건': ['공구', '옷', '가구'], '사람': ['사람1', '사람2', '사람3'], '공간': ['축구장', '농구장'], '노하우': ['노하우1', '노하우2'] };
 
   // 초기값
-  var _selectedCategory = '물건';
-  var _selectedSubCategory = '공구';
-
+  String _selectedCategory;
+  String _selectedSubCategory = "";
+  String _searchName = "";
   @override
   Widget build(BuildContext context) {
 
     final String _thisCategory = ModalRoute.of(context).settings.arguments;
     _selectedCategory = _thisCategory;
-    _selectedSubCategory = _subCategory[_selectedCategory][0];
+    if(_selectedSubCategory == "") _selectedSubCategory = _subCategory[_selectedCategory][0];
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           backgroundColor:Color.fromARGB(255, 25, 14, 78),
           title: TextField(
-            controller: _searchQuery,
+            controller: _searchController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white) //색이 왜 안바뀌냐 ㅡ.ㅡ 어케하는지 모르겟네
@@ -66,11 +66,9 @@ class _SearchPageState extends State<SearchPage> {
                             color: Colors.white
                         ),
                       onPressed: () {
-                          setState(() {
-                            _selectedSubCategory = _searchQuery.text;
-                          });
+                        _onSearch();
 
-                          print(_selectedSubCategory);
+                          print(_searchName);
                       },
                     ),
                     RaisedButton(
@@ -114,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                     onPressed: (){
                       setState(() {
                         _selectedSubCategory = category;
+                        print(_selectedSubCategory);
                       });
                     },
                   )
@@ -125,8 +124,13 @@ class _SearchPageState extends State<SearchPage> {
             ),
             ),
             StreamBuilder<QuerySnapshot>(
+
           //      stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: '공구').snapshots(),
-              stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: _selectedSubCategory).snapshots(),
+              stream: _searchController.text == ""?
+              Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: _selectedSubCategory).snapshots():
+              Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('name', isEqualTo: _searchController.text).where('subCategory', isEqualTo: _selectedSubCategory).snapshots(),
+
+
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return LinearProgressIndicator();
                 if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~");
@@ -149,10 +153,15 @@ class _SearchPageState extends State<SearchPage> {
               }
               ),
           ],
-        )
+        ),
     );
   }
-
+  void _onSearch(){
+    String text = _searchController.text;
+    setState((){
+      _searchController.text = text;
+    });
+  }
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
 
     return Column(
@@ -203,7 +212,8 @@ class _SearchPageState extends State<SearchPage> {
         Container(
           margin: EdgeInsets.all(8.0),
           child: document['available'] ? Text("대여가능") : Text("대여중"),
-        )
+        ),
+//        _defaultInit()
 
       ],
     );
@@ -233,6 +243,5 @@ class _SearchPageState extends State<SearchPage> {
 //      ),
 //    );
   }
-
 }
 
