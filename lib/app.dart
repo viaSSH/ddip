@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'init.dart';
 import 'home.dart';
-import 'search.dart';
+//import 'search.dart';
 import 'detail.dart';
 import 'addItem.dart';
 import 'myPage.dart';
+
+import'newSearch.dart';
 
 void main() => runApp(MyApp());
 
