@@ -17,13 +17,19 @@ class _SearchPageState extends State<SearchPage> {
   _SearchPageState({Key key, @required this.user});
   final TextEditingController _searchQuery = TextEditingController();
 
-  var _subCategory = ['공구', '옷', '가구'];
+//  var _subCategory = ['공구', '옷', '가구'];
+  var _subCategory = {'물건': ['공구', '옷', '가구'], '사람': ['사람1', '사람2', '사람3'], '공간': ['축구장', '농구장'], '노하우': ['노하우1', '노하우2'] };
 
+  // 초기값
   var _selectedCategory = '물건';
   var _selectedSubCategory = '공구';
 
   @override
   Widget build(BuildContext context) {
+
+    final String _thisCategory = ModalRoute.of(context).settings.arguments;
+    _selectedCategory = _thisCategory;
+    _selectedSubCategory = _subCategory[_selectedCategory][0];
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(
@@ -97,7 +103,7 @@ class _SearchPageState extends State<SearchPage> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
-                  for(var category in _subCategory)
+                  for(var category in _subCategory[_thisCategory])
                   RaisedButton(
                     child: Text(category, style:TextStyle(color: Colors.white)),
                     color: Color.fromARGB(255, 25, 14, 78),

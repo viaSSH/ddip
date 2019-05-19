@@ -115,58 +115,56 @@ class _CategorySectionState extends State<_CategorySection> {
 
   DocumentReference docR = Firestore.instance.collection('Items').document();
 
+  var _category = ['물건', '사람', '공간', '노하우'];
+
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          for(var category in _category)
           MaterialButton(
-            child: Text('물품',style: TextStyle(color: Colors.white)),
+            child: Text(category,style: TextStyle(color: Colors.white)),
             color: Colors.orangeAccent,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10)
             ),
             onPressed: () {
               Navigator.pushNamed(context, '/search',
-                arguments: 'item'
+                arguments: category
               );
             },
           ),
-          MaterialButton(
-            child: Text('사람',style: TextStyle(color: Colors.white)),
-            color: Colors.orangeAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
-            ),
-            onPressed: () {
-              print("test");
-              docR.setData({
-                'name': 'zz'
-              }
-              );
-            },
-          ),
-          MaterialButton(
-            child: Text('공간',style: TextStyle(color: Colors.white)),
-            color: Colors.orangeAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
-            ),
-            onPressed: () {
-
-            },
-          ),
-          MaterialButton(
-            child: Text('노하우',style: TextStyle(color: Colors.white)),
-            color: Colors.orangeAccent,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
-            ),
-            onPressed: () {
-
-            },
-          ),
+//          MaterialButton(
+//            child: Text('사람',style: TextStyle(color: Colors.white)),
+//            color: Colors.orangeAccent,
+//            shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.circular(10)
+//            ),
+//            onPressed: () {
+//            },
+//          ),
+//          MaterialButton(
+//            child: Text('공간',style: TextStyle(color: Colors.white)),
+//            color: Colors.orangeAccent,
+//            shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.circular(10)
+//            ),
+//            onPressed: () {
+//
+//            },
+//          ),
+//          MaterialButton(
+//            child: Text('노하우',style: TextStyle(color: Colors.white)),
+//            color: Colors.orangeAccent,
+//            shape: RoundedRectangleBorder(
+//                borderRadius: BorderRadius.circular(10)
+//            ),
+//            onPressed: () {
+//
+//            },
+//          ),
         ],
       ),
     );
