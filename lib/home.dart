@@ -3,6 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:async/async.dart';
 import 'detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+
 class HomePage extends StatefulWidget {
   final FirebaseUser user;
   HomePage({Key key, @required this.user});
@@ -104,8 +109,7 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 title: Text("로그아웃"),
                 onTap: () {
-                  Navigator.pushNamed(context, '/init');
-
+                  _signOut();
                 },
               )
             ],
@@ -115,7 +119,20 @@ class _HomePageState extends State<HomePage> {
 
       backgroundColor: Color.fromARGB(255, 25, 14, 78),
     );
+
   }
+
+  void _signOut() async {
+    await _auth.signOut().then((value){
+      FirebaseAuth.instance.signOut();
+      _googleSignIn.signOut();
+//      final String uid = user.uid;
+//      print(uid + ' has successfully signed out.');
+//      print(user.displayName);
+      Navigator.pushNamed(context, '/init');
+    });
+  }
+
   Widget _buildGridCards(BuildContext context, DocumentSnapshot document) {
     return Card(
       color:Color.fromARGB(255, 25, 14, 78),
