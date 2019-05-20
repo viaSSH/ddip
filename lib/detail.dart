@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class DetailPage extends StatefulWidget {
   FirebaseUser user;
@@ -14,6 +15,13 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   DocumentSnapshot document;
   FirebaseUser user;
+  var formatter = new DateFormat('yyyy-MM-dd(EEE)');
+  DateTime _date = new DateTime.now();
+  DateTime _date2 = new DateTime.now();
+  List<dynamic> stime = null;
+  List<dynamic> etime = null;
+//  DateTime _date = new DateTime.now();
+//  DateTime _date2 = new DateTime.now();
   _DetailPageState({Key key, @required this.document, @required this.user});
 
   @override
@@ -63,6 +71,8 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+    stime = List<dynamic>.from(document['stime']);
+    etime = List<dynamic>.from(document['etime']);
     return
     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,14 +140,169 @@ class _DetailPageState extends State<DetailPage> {
         child: Text("더보기 아직안함"),
         onPressed: (){},
       ),
-      _ActionButtonSection(),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10.0,30,10.0,20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+          MaterialButton(
+          color: Colors.orangeAccent,
+          minWidth: 250,
+          height: 40,
+          shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+          ),
+          onPressed: () async {
+          final List<DateTime> picked = await DateRagePicker.showDatePicker(
+          context: context,
+          initialFirstDate: new DateTime.now(),
+          initialLastDate: new DateTime.now(),
+          firstDate: new DateTime(2015),
+          lastDate: new DateTime(2020),
+          );
+          if (picked != null && picked.length == 2) {
+            stime.add(picked[0]);
+            etime.add(picked[1]);
+            Map<String,dynamic> data = {
+            'stime' : stime,
+            'etime' : etime,
+            };
+          Firestore.instance.collection('Items').document(document.documentID).updateData(data).whenComplete((){
+//          Navigator.push(context,MaterialPageRoute(builder:(context)=>HomePage(user:user)),);
+          });
+          _date = picked[0];
+          _date2 = picked[1];
+          print(picked[0].toString() + "end days:" + picked[1].toString());
+            _showalert();
+          }
+          if(picked != null && picked.length == 1){
+            stime.add(picked[0]);
+            etime.add(picked[0]);
+            Map<String,dynamic> data = {
+              'stime' : stime,
+              'etime' : etime,
+            };
+            Firestore.instance.collection('Items').document(document.documentID).updateData(data).whenComplete((){
+//          Navigator.push(context,MaterialPageRoute(builder:(context)=>HomePage(user:user)),);
+            });
+            _date = picked[0];
+            _date2 = picked[0];
+            print(picked[0].toString() + "end days:" + picked[0].toString());
+            _showalert();
+          }
+          },
+          child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
+          ),
+
+        SizedBox(width:10),
+        MaterialButton(
+
+        color: Colors.orange[200],
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10)
+        ),
+        child: Text("대화하기",style: TextStyle(color: Colors.white, fontSize: 15)),
+        minWidth: 100,
+        height: 40,
+        onPressed: (){},
+        )
+        ],
+      ),
+    ),
+
       _ReplyListSection(),
       _RelatedItemSection(),
     ]
     );
   }
+  void _showalert(){
+    AlertDialog dialog = AlertDialog(
+        content: Container(
+            width:250.0,
+            height:350.0,
+            child:Column(
+                children:[
+                  Container(
+//                    color: Colors.orangeAccent,
+                    width:250.0,
+                    height:100.0,
+                    child:Text("대여신청을 확인하세요",style:TextStyle(fontSize: 20.0)),
+                    alignment: Alignment.center,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+                        Text("물품명: " + document['name']),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+                        Text("가격: " + document['price'] + "원"),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+                        Text("거래장소: " + document['location']),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children:[
+                        Icon(Icons.calendar_today),
+                        SizedBox(width:10.0),
+                        Column(
+                            children:[
+                              Text("대여시작",style:TextStyle(fontSize: 12.0)),
+                              Text("대여종료",style:TextStyle(fontSize: 12.0)),
+                            ]
+                        ),
+                        SizedBox(width:10.0),
+                        Column(
+                            children:[
+                              Text('${formatter.format(_date)}'),
+                              Text('${formatter.format(_date2)}')
+                            ]
+                        )
+                      ]
+                  ),
+                  SizedBox(height:10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        child: Text("확인",style:TextStyle(color:Colors.white,fontSize: 15.0)),
+                        color: Colors.orangeAccent,
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  )
+                ]
+            )
+        ),
+        actions: <Widget>[
 
+        ]
+    );
+    showDialog(context:context,
+        child:dialog);
+  }
 }
+
 class NewItem {
   bool isExpanded;
   final String header;
@@ -146,58 +311,7 @@ class NewItem {
   NewItem(this.isExpanded, this.header, this.body, this.iconpic);
 }
 
-class _ActionButtonSection extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _ActionButtonSectionState();
-}
 
-class _ActionButtonSectionState extends State<_ActionButtonSection> {
-
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0,30,10.0,20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          MaterialButton(
-            color: Colors.orangeAccent,
-            minWidth: 250,
-            height: 40,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
-            ),
-          onPressed: () async {
-            final List<DateTime> picked = await DateRagePicker.showDatePicker(
-                context: context,
-                initialFirstDate: new DateTime.now(),
-                initialLastDate: new DateTime.now(),
-                firstDate: new DateTime(2015),
-                lastDate: new DateTime(2020),
-            );
-            if (picked != null && picked.length == 2) {
-              print(picked);
-            }
-          },
-              child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
-          ),
-
-          SizedBox(width:10),
-          MaterialButton(
-
-            color: Colors.orange[200],
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)
-            ),
-            child: Text("대화하기",style: TextStyle(color: Colors.white, fontSize: 15)),
-            minWidth: 100,
-            height: 40,
-            onPressed: (){},
-          )
-        ],
-      ),
-    );
-  }
-}
 
 //Future<Null> _selectDate2(BuildContext context) async {
 //  final DateTime picked = await showDatePicker(

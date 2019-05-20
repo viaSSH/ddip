@@ -11,6 +11,8 @@ final itemPriceController =  TextEditingController();
 final itemLocationController =  TextEditingController();
 final itemDateController =  TextEditingController();
 final itemContentController =  TextEditingController();
+List<dynamic> stime = [];
+List<dynamic> etime = [];
 class AddItemPage extends StatefulWidget {
 
   @override
@@ -67,7 +69,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'location': itemLocationController.text,
       'description': itemContentController.text,
       'imageUrl': imageUrl,
-
+      'stime' : stime,
+      'etime' : etime,
     }
     );
 
