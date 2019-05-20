@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import './signin_page.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final GoogleSignIn _googleSignIn = GoogleSignIn();
 
 class InitPage extends StatefulWidget {
   @override
@@ -9,7 +12,6 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-  FirebaseUser user;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,10 @@ class _InitPageState extends State<InitPage> {
             },
           ),
           SizedBox(height: 100.0),
-          Image.network(
-              'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2',
-              height: 150.0,
-              width: 150.0),
+//          Image.network(
+//              'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2',
+//              height: 150.0,
+//              width: 150.0),
           SizedBox(height: 50.0),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
@@ -43,7 +45,8 @@ class _InitPageState extends State<InitPage> {
                     color: Color.fromARGB(255, 25, 14, 78),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    onPressed: () => _pushPage(context, SignInPage()),
+//                    onPressed: () => _pushPage(context, SignInPage()),
+                    onPressed: () => _signInWithGoogle(),
                   ),
                   MaterialButton(
                     child: Text('anonymous',
@@ -51,7 +54,7 @@ class _InitPageState extends State<InitPage> {
                     color: Color.fromARGB(255, 25, 14, 78),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    onPressed: () => null,
+                    onPressed: () => _signInAnonymously(),
                   ),
                 ],
               ),
@@ -62,9 +65,76 @@ class _InitPageState extends State<InitPage> {
       backgroundColor: Colors.orangeAccent,
     );
   }
-  void _pushPage(BuildContext context, Widget page) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => page),
-    );
+
+//  void _pushPage(BuildContext context, Widget page) {
+//    Navigator.of(context).push(
+//      MaterialPageRoute<void>(builder: (_) => page),
+//    );
+//  }
+
+  void _signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+    await googleUser.authentication;
+
+    _googleSignIn.signIn().then((result) {
+      result.authentication.then((googleKey) {
+        FirebaseAuth.instance
+            .signInWithCredential(
+            GoogleAuthProvider.getCredential(
+              accessToken: googleAuth.accessToken,
+              idToken: googleAuth.idToken,
+            )).then((signedInUser) {
+          print('Signed in as ${signedInUser.displayName}');
+          Navigator.of(context).pushNamed('/home');
+        }).catchError((e) {
+          print(e);
+        });
+      }).catchError((e) {
+        print(e);
+      });
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  void _signInAnonymously() async {
+    final FirebaseUser user = await _auth.signInAnonymously();
+//    assert(user != null);
+//    assert(user.isAnonymous);
+//    assert(!user.isEmailVerified);
+//    assert(await user.getIdToken() != null);
+//    if (Platform.isIOS) {
+//      // Anonymous auth doesn't show up as a provider on iOS
+//      assert(user.providerData.isEmpty);
+//    } else if (Platform.isAndroid) {
+//      // Anonymous auth does show up as a provider on Android
+//      assert(user.providerData.length == 1);
+//      assert(user.providerData[0].providerId == 'firebase');
+//      assert(user.providerData[0].uid != null);
+//      assert(user.providerData[0].displayName == null);
+//      assert(user.providerData[0].photoUrl == null);
+//      assert(user.providerData[0].email == null);
+//    }
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+    Navigator.of(context).pushNamed('/home');
+    setState(() {
+//      if (user != null) {
+//        _success = true;
+//        _userID = user.uid;
+//      } else {
+//        _success = false;
+//      }
+    });
   }
 }
+
+
+
+
+
+
+
+
