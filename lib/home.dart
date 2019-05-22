@@ -93,13 +93,13 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             children: <Widget>[
               DrawerHeader(
-                child: Text("aaa"),
+                child: Text("aaa",style:TextStyle(color:Colors.white)),
                 decoration: BoxDecoration(
                   color: Colors.blue
                 ),
               ),
               ListTile(
-                title: Text("마이페이지"),
+                title: Text("마이페이지",style:TextStyle(color:Colors.white)),
 
                 onTap: () {
                   Navigator.pushNamed(context, '/myPage');
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                title: Text("로그아웃"),
+                title: Text("로그아웃",style:TextStyle(color:Colors.white)),
                 onTap: () {
                   _signOut();
                 },

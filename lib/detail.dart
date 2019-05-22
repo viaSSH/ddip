@@ -103,20 +103,20 @@ class _DetailPageState extends State<DetailPage> {
                     Text("물건이름",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['name'])
+                        child: Text(document['name'],style:TextStyle(color:Colors.white))
                     ),
                   ]),
                   Row(children: <Widget>[
                     Text("가격",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['price'])
+                        child: Text(document['price'],style:TextStyle(color:Colors.white))
                     ),]),
                   Row(children: <Widget>[
                     Text("장소",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['location'])
+                        child: Text(document['location'],style:TextStyle(color:Colors.white))
                     ),]),
                 ]
           ),
@@ -133,11 +133,11 @@ class _DetailPageState extends State<DetailPage> {
         padding: const EdgeInsets.fromLTRB(10.0,10,10,10),
         child: Container(
             margin: EdgeInsets.all(8.0),
-            child: Text(document['description'])
+            child: Text(document['description'],style:TextStyle(color:Colors.white))
         ),
       ),
       RaisedButton(
-        child: Text("더보기 아직안함"),
+        child: Text("더보기 아직안함",),
         onPressed: (){},
       ),
       Padding(
@@ -336,7 +336,7 @@ class _ReplyListSection extends StatefulWidget {
 class _ReplyListSectionState extends State<_ReplyListSection> {
 
   Widget build(BuildContext context) {
-    return Text("댓글창 부분");
+    return Text("댓글창 부분",style:TextStyle(color:Colors.white));
   }
 }
 
@@ -348,6 +348,6 @@ class _RelatedItemSection extends StatefulWidget {
 class _RelatedItemSectionState extends State<_RelatedItemSection> {
 
   Widget build(BuildContext context) {
-    return Text("연관 검색어 부분");
+    return Text("연관 검색어 부분",style:TextStyle(color:Colors.white));
   }
 }

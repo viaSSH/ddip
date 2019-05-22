@@ -100,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
         //      mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("물건찾기"),
+                  Text("물건찾기",style:TextStyle(color:Colors.white)),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -131,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
               stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: _selectedSubCategory).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return LinearProgressIndicator();
-                if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~");
+                if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white));
                 return Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
@@ -200,11 +200,11 @@ class _SearchPageState extends State<SearchPage> {
 //        ),
         Container(
             margin: EdgeInsets.all(8.0),
-            child: Text(document['name'])
+            child: Text(document['name'],style:TextStyle(color:Colors.white))
         ),
         Container(
           margin: EdgeInsets.all(8.0),
-          child: document['available'] ? Text("대여가능") : Text("대여중"),
+          child: document['available'] ? Text("대여가능",style:TextStyle(color:Colors.white)) : Text("대여중",style:TextStyle(color:Colors.white)),
         )
 
       ],

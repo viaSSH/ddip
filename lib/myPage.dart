@@ -15,9 +15,9 @@ class _MyPageState extends State<MyPage> {
     return Scaffold(
       body: ListView(
         children: <Widget>[
-          Text("my page"),
+          Text("my page",style:TextStyle(color:Colors.white)),
           RaisedButton(
-            child: Text("move to main page"),
+            child: Text("move to main page",style:TextStyle(color:Colors.white)),
             onPressed: () {
               Navigator.pushNamed(context, '/home');
             },
