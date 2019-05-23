@@ -89,6 +89,7 @@ class _InitPageState extends State<InitPage> {
     assert(user.uid == signedInUser.uid);
 
     print('Signed in as ${signedInUser.displayName}');
+    //
 //    Navigator.pushNamed(context, '/home', arguments: signedInUser);
     Navigator.push(context, new MaterialPageRoute(builder: (context)
     => new HomePage(user: signedInUser, auth: _auth, googleSignIn: _googleSignIn)));
@@ -98,8 +99,6 @@ class _InitPageState extends State<InitPage> {
 
   void _signInAnonymously() async {
     final FirebaseUser user = await _auth.signInAnonymously();
-
-
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
     Navigator.of(context).pushNamed('/home');
