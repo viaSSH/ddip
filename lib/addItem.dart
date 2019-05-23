@@ -179,21 +179,6 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         },
                       ),
                     ),
-
-//                    Flexible(
-//                      child: Container(
-//                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-//                        child: TextFormField(
-//                          style: new TextStyle(color: Colors.white),
-//                          controller: itemCategoryController,
-//                          validator: (value) {
-//                            if(value.isEmpty) {
-//                              return 'Please enter some text';
-//                            }
-//                          },
-//                        ),
-//                      ),
-//                    ),
                   ],
                 ),
                 Row(
