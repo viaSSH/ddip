@@ -4,6 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final replyController =  TextEditingController();
+
+
+
 class DetailPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot document;
@@ -16,16 +21,120 @@ class _DetailPageState extends State<DetailPage> {
   DocumentSnapshot document;
   FirebaseUser user;
   var formatter = new DateFormat('yyyy-MM-dd(EEE)');
+  var formatterHour = DateFormat('yyyy-MM-dd(EEE) hh:mm');
   DateTime _date = new DateTime.now();
   DateTime _date2 = new DateTime.now();
   List<dynamic> stime = null;
   List<dynamic> etime = null;
+
+  bool isFirst = false;
+  int likedCnt = null;
+  bool _likedPressed = false;
+  
+  var myUid = null;
 //  DateTime _date = new DateTime.now();
 //  DateTime _date2 = new DateTime.now();
   _DetailPageState({Key key, @required this.document, @required this.user});
 
+
+
+
+  void uploadTransaction() async {
+    DocumentReference docTransR = Firestore.instance.collection('Transactions').document();
+    DocumentReference docItemsR = Firestore.instance.collection('Transactions').document();
+
+//    print(document.documentID);
+//    print(_date);
+//    print(_date2);
+
+//    docTransR.setData({
+//      'buyer': 'a',
+//      'seller': 'b', // document의 owner 참조해서 추가하기
+//      'item': document.documentID,
+//      'date': DateTime.now(),
+//      'rentStart': _date,
+//      'rentEnd': _date2
+//
+//    }
+//    );
+
+    docItemsR.updateData({
+     'available': false
+    }
+    );
+
+    final FirebaseUser user = await _auth.currentUser();
+
+    print(user);
+  }
+
+  void uploadReply () async {
+    final FirebaseUser user = await _auth.currentUser();
+    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+
+    docItemsR.updateData({
+      'reply': FieldValue.arrayUnion([
+          {
+            'name': user.displayName,
+            'date': DateTime.now(),
+            'content': replyController.text
+          }
+        ])
+
+
+    }
+    );
+    replyController.clear();
+  }
+
+  void checkLiked() async{
+    isFirst = true;
+    final FirebaseUser user = await _auth.currentUser();
+    final String uid = user.uid;
+//      final String uid = "asd";
+//    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+    print(uid);
+
+    var likedUser = List<dynamic>.from(document['likedUser']);
+    likedCnt = document['like'];
+
+    if(likedUser.contains(uid)){
+      print("already!");
+      setState(() {
+        _likedPressed = true;
+      });
+    }
+    else{
+      print("not used");
+      setState(() {
+        _likedPressed = false;
+      });
+
+    }
+  }
+
+
+
+  void getUid() async {
+    final FirebaseUser user = await _auth.currentUser();
+    final String uid = user.uid;
+    myUid = uid;
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    if(document['reply'] == null) document.data['reply']={};
+    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+    if(!isFirst) checkLiked();
+//    getUid();
+
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +143,44 @@ class _DetailPageState extends State<DetailPage> {
         title: Text("< "+document['category']+" > "+document['name']),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.share)
+            icon: Icon(
+                _likedPressed ? Icons.favorite : Icons.favorite_border,
+              color: _likedPressed ? Colors.red : Colors.white
+            ),
+            onPressed: ()  async {
+              final FirebaseUser user = await _auth.currentUser();
+              final String uid = user.uid;
+//              final int liked = document['like'];
+              if(likedCnt == null) likedCnt = document['like'];
+
+
+              var likedUser = List<dynamic>.from(document['likedUser']);
+//              if(likedUser.contains(uid)){
+                if(_likedPressed){
+                  likedCnt--;
+                docItemsR.updateData({'like': likedCnt});
+                likedUser.remove(uid);
+                docItemsR.updateData({'likedUser': likedUser});
+                setState(() {
+                  _likedPressed = false;
+                });
+//                _showBar('You can only do it once!!');
+
+              }
+              else{
+                likedCnt++;
+                docItemsR.updateData({'like': likedCnt});
+                likedUser.add(uid);
+                docItemsR.updateData({'likedUser': likedUser});
+                setState(() {
+                  _likedPressed = true;
+                });
+
+//                _showBar('I like it');
+              }
+
+
+            },
           )
         ],
       ),
@@ -54,9 +200,13 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
   Widget _buildBody(BuildContext context) {
+
+
+
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Items').where('name',isEqualTo: document['name']).snapshots(),
       builder: (context, snapshot) {
+
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.documents);
       },
@@ -73,6 +223,10 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     stime = List<dynamic>.from(document['stime']);
     etime = List<dynamic>.from(document['etime']);
+
+
+
+
     return
     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,21 +257,27 @@ class _DetailPageState extends State<DetailPage> {
                     Text("물건이름",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['name'])
+                        child: Text(document['name'],style:TextStyle(color:Colors.white))
                     ),
                   ]),
                   Row(children: <Widget>[
                     Text("가격",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['price'])
+                        child: Text(document['price'],style:TextStyle(color:Colors.white))
                     ),]),
                   Row(children: <Widget>[
                     Text("장소",style:TextStyle(color:Colors.grey)),
                     Container(
                         margin: EdgeInsets.all(8.0),
-                        child: Text(document['location'])
+                        child: Text(document['location'],style:TextStyle(color:Colors.white))
                     ),]),
+                  Row(children: <Widget>[
+                  Text("찜한사람",style:TextStyle(color:Colors.grey)),
+                  Container(
+                  margin: EdgeInsets.all(8.0),
+                  child: Text(likedCnt.toString()+"명",style:TextStyle(color:Colors.white))
+                  ),]),
                 ]
           ),
             ),
@@ -133,13 +293,16 @@ class _DetailPageState extends State<DetailPage> {
         padding: const EdgeInsets.fromLTRB(10.0,10,10,10),
         child: Container(
             margin: EdgeInsets.all(8.0),
-            child: Text(document['description'])
+            child: Text(document['description'],style:TextStyle(color:Colors.white))
         ),
       ),
       RaisedButton(
-        child: Text("더보기 아직안함"),
+        child: Text("더보기 아직안함",),
         onPressed: (){},
       ),
+
+
+
       Padding(
         padding: const EdgeInsets.fromLTRB(10.0,30,10.0,20),
         child: Row(
@@ -210,11 +373,102 @@ class _DetailPageState extends State<DetailPage> {
       ),
     ),
 
-      _ReplyListSection(),
-      _RelatedItemSection(),
+//      document['reply'] != null ? {Text("yes")} : Text("no"),
+
+      if(document['reply'] == null) Text("댓글이 없습니다")
+      else
+        for (var reply in document['reply'])
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    if(reply['name'] == null) Text("이름없음")
+                    else Text(reply['name']),
+                    Text('${formatterHour.format(DateTime.fromMillisecondsSinceEpoch(reply['date'].seconds * 1000 + 60*60*9*1000)) }'),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(reply['content'])
+                  ],
+                ),
+                Divider(
+                  color: Colors.white,
+                  height: 8.0,
+                )
+
+              ],
+            ),
+          ),
+
+    Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+      children: <Widget>[
+        Text("댓글쓰기"),
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextField(
+                  style: new TextStyle(color: Colors.white),
+                  controller: replyController,
+                  decoration: InputDecoration(
+                    hintText: "댓글을 입력해주세요 :)",
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 12.0),
+//                    border: OutlineInputBorder(
+//                      borderSide: BorderSide(
+//                        color: Colors.red,
+//                        width: 30
+//                      ),
+//
+//                    ),
+//                    focusedBorder: OutlineInputBorder(
+////                      borderSide: BorderSide(
+//////                      color: Colors.white,
+////                      width: 30
+////                      ),
+////
+////                    ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                        ),
+                      ),
+
+                      prefixIcon: Icon(
+                        Icons.textsms,
+                        color: Colors.white,
+                      ),
+
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.send, color: Colors.white),
+              onPressed: () {
+                uploadReply();
+              },
+
+            ),
+          ],
+        )
+      ],
+      ),
+    ),
+
+//      _ReplyListSection(),
+//      _RelatedItemSection(),
     ]
     );
   }
+
+
   void _showalert(){
     AlertDialog dialog = AlertDialog(
         content: Container(
@@ -286,6 +540,7 @@ class _DetailPageState extends State<DetailPage> {
                         child: Text("확인",style:TextStyle(color:Colors.white,fontSize: 15.0)),
                         color: Colors.orangeAccent,
                         onPressed: (){
+                          uploadTransaction();
                           Navigator.of(context).pop();
                         },
                       ),
@@ -336,7 +591,7 @@ class _ReplyListSection extends StatefulWidget {
 class _ReplyListSectionState extends State<_ReplyListSection> {
 
   Widget build(BuildContext context) {
-    return Text("댓글창 부분");
+    return Text("댓글창 부분",style:TextStyle(color:Colors.white));
   }
 }
 
@@ -348,6 +603,6 @@ class _RelatedItemSection extends StatefulWidget {
 class _RelatedItemSectionState extends State<_RelatedItemSection> {
 
   Widget build(BuildContext context) {
-    return Text("연관 검색어 부분");
+    return Text("연관 검색어 부분",style:TextStyle(color:Colors.white));
   }
 }

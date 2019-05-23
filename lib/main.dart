@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           title: TextStyle(color: Colors.white),
           headline: TextStyle(color: Colors.white),
           body1: TextStyle(color: Colors.white),
-          body2: TextStyle(color: Colors.white),
+//          body2: TextStyle(color: Colors.white),
 
 
 

@@ -34,7 +34,7 @@ class _AddItemPageState extends State<AddItemPage> {
         padding: const EdgeInsets.fromLTRB(8.0,20,8.0,10),
         child: ListView(
           children: <Widget>[
-            Center(child: Text("물건 대여 신청",style: TextStyle(fontSize: 25))),
+            Center(child: Text("물건 대여 신청",style: TextStyle(fontSize: 25,color:Colors.white))),
             _AddItemFormSection()
           ],
         ),
@@ -133,7 +133,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("물품종류")
+                        child: Text("물품종류",style:TextStyle(color:Colors.white))
                     ),
 
                     Flexible(
@@ -179,21 +179,6 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         },
                       ),
                     ),
-
-//                    Flexible(
-//                      child: Container(
-//                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-//                        child: TextFormField(
-//                          style: new TextStyle(color: Colors.white),
-//                          controller: itemCategoryController,
-//                          validator: (value) {
-//                            if(value.isEmpty) {
-//                              return 'Please enter some text';
-//                            }
-//                          },
-//                        ),
-//                      ),
-//                    ),
                   ],
                 ),
                 Row(
@@ -203,7 +188,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("물품명")
+                        child: Text("물품명",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
                       child: Container(
@@ -228,7 +213,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("거래가격")
+                        child: Text("거래가격",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
                       child: Container(
@@ -253,7 +238,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("거래장소")
+                        child: Text("거래장소",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
 
@@ -279,7 +264,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("대여가능기간")
+                        child: Text("대여가능기간",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
 
@@ -305,7 +290,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("물품설명")
+                        child: Text("물품설명",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
                       child: Container(
@@ -331,7 +316,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("사진첨부")
+                        child: Text("사진첨부",style:TextStyle(color:Colors.white))
                     ),
                     IconButton(
                       icon: Icon(Icons.camera_alt,color: Colors.white),
@@ -344,7 +329,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   children: <Widget>[
                     Center(
                         child: _image == null
-                            ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0),)
+                            ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0,color:Colors.white),)
                             : Container(
                           height: 100,
                           width:  160,

@@ -16,8 +16,6 @@ class _SearchPageState extends State<SearchPage> {
   final FirebaseUser user;
   _SearchPageState({Key key, @required this.user});
   final TextEditingController _searchQuery = TextEditingController();
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -30,7 +28,6 @@ class _SearchPageState extends State<SearchPage> {
             decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white) //색이 왜 안바뀌냐 ㅡ.ㅡ 어케하는지 모르겟네
-
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.white, width: 3.0),
@@ -72,7 +69,6 @@ class _SearchPageState extends State<SearchPage> {
         ),
         backgroundColor: Color.fromARGB(255, 25, 14, 78),
         body: ListView(
-
           children: <Widget>[
             _QuickQuerySection(),
             _ItemSection()
@@ -81,7 +77,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
 class _QuickQuerySection extends StatefulWidget {
 
   @override
@@ -90,13 +85,8 @@ class _QuickQuerySection extends StatefulWidget {
 }
 
 class _QuickQuerySectionState extends State<_QuickQuerySection> {
-
-
-
   var _subCategory = ['공구', '옷', '가구'];
-
   @override
-
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
@@ -104,7 +94,7 @@ class _QuickQuerySectionState extends State<_QuickQuerySection> {
 //      mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("물건찾기"),
+          Text("물건찾기",style:TextStyle(color:Colors.white)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -249,11 +239,12 @@ class _ItemSectionState extends State<_ItemSection> {
         ),
         Container(
             margin: EdgeInsets.all(8.0),
-            child: Text(document['name'])
+            child: Text(document['name'],style:TextStyle(color:Colors.white))
         ),
         Container(
           margin: EdgeInsets.all(8.0),
-          child: document['available'] ? Text("대여가능") : Text("대여중"),
+          child: document['available'] ? Text("대여가능",style:TextStyle(color:Colors.white))
+              : Text("대여중",style:TextStyle(color:Colors.white)),
         )
 
       ],
