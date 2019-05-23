@@ -56,26 +56,33 @@ class _UserInfoState extends State<_UserInfoSection> {
   FirebaseUser user;
   String _selectedCategory='물건';// = '물건';
   String _selectedSubCategory = '공구';// = '공구';
-  String imageUrl="";
+//  String imageUrl="";
+  String imageUrl = defimg;
   String phoneN = "";
-  String myName;
+  String myName = "";
   String userUID;
   bool isAnonymous = true;
+  bool getOnce = false;
   void getUSer() async {
+    getOnce = true;
     final FirebaseUser user = await _auth.currentUser();
-    user.displayName == null ? myName = "익명" : myName = user.displayName;
-    userUID = user.uid;
-    user.photoUrl == null ? imageUrl = defimg : imageUrl = user.photoUrl;
-    isAnonymous = user.isAnonymous;
-    phoneN = user.phoneNumber;
-    print(imageUrl);
-    print(myName);
-    print(user.uid);
-    print(isAnonymous);
+
+    setState(() {
+      user.displayName == null ? myName = "익명" : myName = user.displayName;
+      userUID = user.uid;
+      user.photoUrl == null ? imageUrl = defimg : imageUrl = user.photoUrl;
+      isAnonymous = user.isAnonymous;
+      phoneN = user.phoneNumber;
+    });
+
+//    print(imageUrl);
+//    print(myName);
+//    print(user.uid);
+//    print(isAnonymous);
   }
 
   Widget build(BuildContext context) {
-    getUSer();
+    if(!getOnce) getUSer();
 
     return SingleChildScrollView(
       child: Container(
@@ -115,6 +122,7 @@ class _UserInfoState extends State<_UserInfoSection> {
                 ),
                     ExpansionPanelList(
                     expansionCallback: (int index, bool isExpanded) {
+                      print(index.toString() + ", " + isExpanded.toString());
                       setState(() {
                         _data[index].isExpanded = !isExpanded;
                         if(_data[0].isExpanded) {
@@ -178,6 +186,7 @@ class _UserInfoState extends State<_UserInfoSection> {
                           ),
                          ),
                           isExpanded: item.isExpanded,
+                        canTapOnHeader: true,
                           );
                           }).toList(),
                         ),

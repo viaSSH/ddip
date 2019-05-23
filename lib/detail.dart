@@ -3,6 +3,7 @@ import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final replyController =  TextEditingController();
@@ -271,7 +272,19 @@ class _DetailPageState extends State<DetailPage> {
                     Container(
                         margin: EdgeInsets.all(8.0),
                         child: Text(document['location'],style:TextStyle(color:Colors.white))
-                    ),]),
+                    ),
+                    RaisedButton(
+                      child: Text("지도에서 보기"),
+                      onPressed: () {
+//                        double lng = 0.0;
+//                        double lat = 0.0;
+//                        if(document['logntitude'])
+                        LatLng position = LatLng(document['latitude'], document['longitude']);
+//                        position = {'longtitude': 1, 'latitude': 2};
+                        Navigator.pushNamed(context, '/map', arguments: position);
+                      },
+                    )
+                  ]),
                   Row(children: <Widget>[
                   Text("찜한사람",style:TextStyle(color:Colors.grey)),
                   Container(

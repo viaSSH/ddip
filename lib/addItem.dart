@@ -4,6 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:async';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'detail.dart';
+import 'map.dart';
 
 final itemCategoryController =  TextEditingController();
 final itemNameController =  TextEditingController();
@@ -11,6 +15,8 @@ final itemPriceController =  TextEditingController();
 final itemLocationController =  TextEditingController();
 final itemDateController =  TextEditingController();
 final itemContentController =  TextEditingController();
+double lattitude = 0;
+double longitude = 0;
 List<dynamic> stime = [];
 List<dynamic> etime = [];
 class AddItemPage extends StatefulWidget {
@@ -21,6 +27,12 @@ class AddItemPage extends StatefulWidget {
 }
 
 class _AddItemPageState extends State<AddItemPage> {
+
+  Completer<GoogleMapController> _controller = Completer();
+  static const LatLng _center = const LatLng(36.103079, 129.3880255);
+  LatLng _lastMapPosition = _center;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +47,7 @@ class _AddItemPageState extends State<AddItemPage> {
         child: ListView(
           children: <Widget>[
             Center(child: Text("물건 대여 신청",style: TextStyle(fontSize: 25,color:Colors.white))),
-            _AddItemFormSection()
+            _AddItemFormSection(),
           ],
         ),
       ),
@@ -59,6 +71,19 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 
   File _image;
 
+  void goToMapScreen() async {
+    LatLng result = await Navigator.push(context, new MaterialPageRoute(
+      builder: (BuildContext context) => MapPage(),
+      fullscreenDialog: true,)
+    );
+
+    lattitude = result.latitude;
+    longitude = result.longitude;
+
+//    Scaffold.of(context).showSnackBar(
+//        SnackBar(content: Text("$result"), duration: Duration(seconds: 3),));
+  }
+
   void uploadItem() {
     DocumentReference docR = Firestore.instance.collection('Items').document();
 
@@ -71,6 +96,11 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'imageUrl': imageUrl,
       'stime' : stime,
       'etime' : etime,
+      'latitude': lattitude,
+      'longitude': longitude,
+      'like': 0,
+      'likedUser': [],
+      'reply': []
     }
     );
 
@@ -111,7 +141,10 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //  List _myCategories = [{'kor': '물건', 'en': 'goods'}, {'kor': '사람', 'id': 'manpower'}];
   String _SelectedCategory = '물건';
 
+
+
   Widget build(BuildContext context) {
+
     return Container(
         padding: EdgeInsets.all(16.0),
         margin: EdgeInsets.fromLTRB(16.0,50,16.0,10),
@@ -255,6 +288,13 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         ),
                       ),
                     ),
+                    RaisedButton(
+                      child: Text("지도에서 선택"),
+                      onPressed: () {
+//                        Navigator.pushNamed(context,'/map');
+                        goToMapScreen();
+                      },
+                    )
                   ],
                 ),
                 Row(

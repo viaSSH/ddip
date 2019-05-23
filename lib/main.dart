@@ -6,6 +6,7 @@ import 'detail.dart';
 import 'addItem.dart';
 import 'myPage.dart';
 import'newSearch.dart';
+import 'map.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         '/detail': (context) => DetailPage(),
         '/addItem': (context) => AddItemPage(),
         '/myPage': (context) => MyPage(),
+        '/map': (context) => MapPage(),
 
       },
     );
