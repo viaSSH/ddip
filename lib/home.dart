@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                     width: 180,
                     height: 110,
                     decoration: BoxDecoration(
-                      image: DecorationImage(image: NetworkImage(document['imageUrl']),
+                      image: DecorationImage(image: NetworkImage( document['imageUrl'][0]),
                           fit: BoxFit.fill
                       ),
                     ),

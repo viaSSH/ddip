@@ -242,7 +242,7 @@ class _DetailPageState extends State<DetailPage> {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  image: DecorationImage(image: NetworkImage(document['imageUrl']),
+                  image: DecorationImage(image: NetworkImage(document['imageUrl'][0]),
                       fit: BoxFit.cover
                   ),
                 ),

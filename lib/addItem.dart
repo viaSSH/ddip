@@ -8,6 +8,8 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'detail.dart';
 import 'map.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:flutter/services.dart';
 
 final itemCategoryController =  TextEditingController();
 final itemNameController =  TextEditingController();
@@ -69,6 +71,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
   final _addItemFormKey = GlobalKey<FormState>();
   String imageUrl;
 
+  var imageUrls = [];
+
   File _image;
 
   void goToMapScreen() async {
@@ -93,7 +97,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'price': itemPriceController.text,
       'location': itemLocationController.text,
       'description': itemContentController.text,
-      'imageUrl': imageUrl,
+//      'imageUrl': imageUrl,
+      'imageUrl': imageUrls,
       'stime' : stime,
       'etime' : etime,
       'latitude': lattitude,
@@ -135,6 +140,43 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //    });
 //    print("this" + url);
 
+  }
+
+  void _getImageList() async {
+    var resultList = await MultiImagePicker.pickImages(
+      maxImages :  10 ,
+      enableCamera: false,
+    );
+
+    // The data selected here comes back in the list
+    print(resultList);
+    for ( var imageFile in resultList) {
+      postImage(imageFile).then((downloadUrl) {
+        // Get the download URL
+        print(downloadUrl.toString());
+        imageUrls.add(downloadUrl.toString());
+      }).catchError((err) {
+        print(err);
+      });
+    }
+    print(imageUrls);
+  }
+
+  Future<dynamic> postImage(Asset asset) async {
+////    await imageFile.requestOriginal();
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+////    StorageReference reference = _storage.ref().child("/items/"+DateTime.now().toString() + ".jpg");
+//    StorageReference reference = FirebaseStorage.instance.ref().child("/items/"+ fileName + ".jpg");
+////    StorageUploadTask uploadTask = reference.putData(imageFile.imageData.buffer.asUint8List());
+////    StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+////    return storageTaskSnapshot.ref.getDownloadURL();
+
+    ByteData byteData = await asset.requestOriginal();
+    List<int> imageData = byteData.buffer.asUint8List();
+    StorageReference ref = FirebaseStorage.instance.ref().child("/items/"+ fileName + ".jpg");
+    StorageUploadTask uploadTask = ref.putData(imageData);
+
+    return await (await uploadTask.onComplete).ref.getDownloadURL();
   }
 
   List<String> _categories = <String>['물건', '사람', '공간', '노하우'];
@@ -360,7 +402,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     ),
                     IconButton(
                       icon: Icon(Icons.camera_alt,color: Colors.white),
-                      onPressed: uploadPic,
+//                      onPressed: uploadPic,
+                      onPressed: _getImageList,
                     )
                   ],
                 ),
