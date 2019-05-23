@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final replyController =  TextEditingController();
 
+
+
 class DetailPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot document;
@@ -24,6 +26,12 @@ class _DetailPageState extends State<DetailPage> {
   DateTime _date2 = new DateTime.now();
   List<dynamic> stime = null;
   List<dynamic> etime = null;
+
+  bool isFirst = false;
+  int likedCnt = null;
+  bool _likedPressed = false;
+  
+  var myUid = null;
 //  DateTime _date = new DateTime.now();
 //  DateTime _date2 = new DateTime.now();
   _DetailPageState({Key key, @required this.document, @required this.user});
@@ -65,7 +73,6 @@ class _DetailPageState extends State<DetailPage> {
     DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
 
 
-
     docItemsR.updateData({
       'reply': FieldValue.arrayUnion([
           {
@@ -81,10 +88,52 @@ class _DetailPageState extends State<DetailPage> {
     replyController.clear();
   }
 
+  void checkLiked() async{
+    isFirst = true;
+    final FirebaseUser user = await _auth.currentUser();
+    final String uid = user.uid;
+//      final String uid = "asd";
+//    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+    print(uid);
+
+    var likedUser = List<dynamic>.from(document['likedUser']);
+    likedCnt = document['like'];
+
+    if(likedUser.contains(uid)){
+      print("already!");
+      setState(() {
+        _likedPressed = true;
+      });
+    }
+    else{
+      print("not used");
+      setState(() {
+        _likedPressed = false;
+      });
+
+    }
+  }
+
+
+
+  void getUid() async {
+    final FirebaseUser user = await _auth.currentUser();
+    final String uid = user.uid;
+    myUid = uid;
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
     if(document['reply'] == null) document.data['reply']={};
+    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+    if(!isFirst) checkLiked();
+//    getUid();
 
     // TODO: implement build
     return Scaffold(
@@ -94,7 +143,44 @@ class _DetailPageState extends State<DetailPage> {
         title: Text("< "+document['category']+" > "+document['name']),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.share)
+            icon: Icon(
+                _likedPressed ? Icons.favorite : Icons.favorite_border,
+              color: _likedPressed ? Colors.red : Colors.white
+            ),
+            onPressed: ()  async {
+              final FirebaseUser user = await _auth.currentUser();
+              final String uid = user.uid;
+//              final int liked = document['like'];
+              if(likedCnt == null) likedCnt = document['like'];
+
+
+              var likedUser = List<dynamic>.from(document['likedUser']);
+//              if(likedUser.contains(uid)){
+                if(_likedPressed){
+                  likedCnt--;
+                docItemsR.updateData({'like': likedCnt});
+                likedUser.remove(uid);
+                docItemsR.updateData({'likedUser': likedUser});
+                setState(() {
+                  _likedPressed = false;
+                });
+//                _showBar('You can only do it once!!');
+
+              }
+              else{
+                likedCnt++;
+                docItemsR.updateData({'like': likedCnt});
+                likedUser.add(uid);
+                docItemsR.updateData({'likedUser': likedUser});
+                setState(() {
+                  _likedPressed = true;
+                });
+
+//                _showBar('I like it');
+              }
+
+
+            },
           )
         ],
       ),
@@ -114,9 +200,13 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
   Widget _buildBody(BuildContext context) {
+
+
+
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('Items').where('name',isEqualTo: document['name']).snapshots(),
       builder: (context, snapshot) {
+
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.documents);
       },
@@ -182,6 +272,12 @@ class _DetailPageState extends State<DetailPage> {
                         margin: EdgeInsets.all(8.0),
                         child: Text(document['location'],style:TextStyle(color:Colors.white))
                     ),]),
+                  Row(children: <Widget>[
+                  Text("찜한사람",style:TextStyle(color:Colors.grey)),
+                  Container(
+                  margin: EdgeInsets.all(8.0),
+                  child: Text(likedCnt.toString()+"명",style:TextStyle(color:Colors.white))
+                  ),]),
                 ]
           ),
             ),
@@ -204,6 +300,9 @@ class _DetailPageState extends State<DetailPage> {
         child: Text("더보기 아직안함",),
         onPressed: (){},
       ),
+
+
+
       Padding(
         padding: const EdgeInsets.fromLTRB(10.0,30,10.0,20),
         child: Row(
