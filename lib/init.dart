@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home.dart';
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -71,27 +73,26 @@ class _InitPageState extends State<InitPage> {
 
   void _signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+
     final GoogleSignInAuthentication googleAuth =
     await googleUser.authentication;
 
-    _googleSignIn.signIn().then((result) {
-      result.authentication.then((googleKey) {
-        FirebaseAuth.instance
-            .signInWithCredential(
-            GoogleAuthProvider.getCredential(
-              accessToken: googleAuth.accessToken,
-              idToken: googleAuth.idToken,
-            )).then((signedInUser) {
-          print('Signed in as ${signedInUser.displayName}');
-          Navigator.of(context).pushNamed('/home');
-        }).catchError((e) {
-          print(e);
-        });
-      }).catchError((e) {
-        print(e);
-      });
-    }).catchError((e) {
-      print(e);
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final FirebaseUser user =
+    await _auth.signInWithCredential(credential);
+
+    final FirebaseUser signedInUser = await _auth.currentUser();
+    assert(user.uid == signedInUser.uid);
+
+    print('Signed in as ${signedInUser.displayName}');
+//    Navigator.pushNamed(context, '/home', arguments: signedInUser);
+    Navigator.push(context, new MaterialPageRoute(builder: (context)
+    => new HomePage(user: signedInUser, auth: _auth, googleSignIn: _googleSignIn)));
+    setState(() {
     });
   }
 
@@ -106,7 +107,20 @@ class _InitPageState extends State<InitPage> {
 
     });
   }
+
+  void _signOut() async {
+    await _auth.signOut().then((value) {
+      _googleSignIn.signOut();
+//      final String uid = user.uid;
+//      print(uid + ' has successfully signed out.');
+//      print(user.displayName);
+      Navigator.pushNamed(context, '/init');
+    });
+  }
 }
+
+
+// class that contains both a customizable title and message.
 
 
 
