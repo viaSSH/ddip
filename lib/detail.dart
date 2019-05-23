@@ -276,11 +276,12 @@ class _DetailPageState extends State<DetailPage> {
                     RaisedButton(
                       child: Text("지도에서 보기"),
                       onPressed: () {
-//                        double lng = 0.0;
-//                        double lat = 0.0;
-//                        if(document['logntitude'])
-                        LatLng position = LatLng(document['latitude'], document['longitude']);
-//                        position = {'longtitude': 1, 'latitude': 2};
+                        double lng = 127.108625;
+                        double lat = 37.365952;
+                        if(document['logntitude'] != null) lng = document['logntitude'];
+                        if(document['latitude'] != null) lat = document['latitude'];
+//                        LatLng position = LatLng(document['latitude'], document['longitude']);
+                        LatLng position = LatLng(lat, lng);
                         Navigator.pushNamed(context, '/map', arguments: position);
                       },
                     )
