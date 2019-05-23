@@ -285,7 +285,8 @@ class _DetailPageState extends State<DetailPage> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text(reply['name']),
+                    if(reply['name'] == null) Text("이름없음")
+                    else Text(reply['name']),
                     Text('${formatterHour.format(DateTime.fromMillisecondsSinceEpoch(reply['date'].seconds * 1000 + 60*60*9*1000)) }'),
                   ],
                 ),
