@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final replyController =  TextEditingController();
+
 class DetailPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot document;
@@ -16,6 +19,7 @@ class _DetailPageState extends State<DetailPage> {
   DocumentSnapshot document;
   FirebaseUser user;
   var formatter = new DateFormat('yyyy-MM-dd(EEE)');
+  var formatterHour = DateFormat('yyyy-MM-dd(EEE) hh:mm');
   DateTime _date = new DateTime.now();
   DateTime _date2 = new DateTime.now();
   List<dynamic> stime = null;
@@ -24,8 +28,64 @@ class _DetailPageState extends State<DetailPage> {
 //  DateTime _date2 = new DateTime.now();
   _DetailPageState({Key key, @required this.document, @required this.user});
 
+
+
+
+  void uploadTransaction() async {
+    DocumentReference docTransR = Firestore.instance.collection('Transactions').document();
+    DocumentReference docItemsR = Firestore.instance.collection('Transactions').document();
+
+//    print(document.documentID);
+//    print(_date);
+//    print(_date2);
+
+//    docTransR.setData({
+//      'buyer': 'a',
+//      'seller': 'b', // document의 owner 참조해서 추가하기
+//      'item': document.documentID,
+//      'date': DateTime.now(),
+//      'rentStart': _date,
+//      'rentEnd': _date2
+//
+//    }
+//    );
+
+    docItemsR.updateData({
+     'available': false
+    }
+    );
+
+    final FirebaseUser user = await _auth.currentUser();
+
+    print(user);
+  }
+
+  void uploadReply () async {
+    final FirebaseUser user = await _auth.currentUser();
+    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+
+
+
+    docItemsR.updateData({
+      'reply': FieldValue.arrayUnion([
+          {
+            'name': user.displayName,
+            'date': DateTime.now(),
+            'content': replyController.text
+          }
+        ])
+
+
+    }
+    );
+    replyController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    if(document['reply'] == null) document.data['reply']={};
+
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -73,6 +133,10 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     stime = List<dynamic>.from(document['stime']);
     etime = List<dynamic>.from(document['etime']);
+
+
+
+
     return
     Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,11 +274,101 @@ class _DetailPageState extends State<DetailPage> {
       ),
     ),
 
-      _ReplyListSection(),
-      _RelatedItemSection(),
+//      document['reply'] != null ? {Text("yes")} : Text("no"),
+
+      if(document['reply'] == null) Text("댓글이 없습니다")
+      else
+        for (var reply in document['reply'])
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(reply['name']),
+                    Text('${formatterHour.format(DateTime.fromMillisecondsSinceEpoch(reply['date'].seconds * 1000 + 60*60*9*1000)) }'),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(reply['content'])
+                  ],
+                ),
+                Divider(
+                  color: Colors.white,
+                  height: 8.0,
+                )
+
+              ],
+            ),
+          ),
+
+    Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+      children: <Widget>[
+        Text("댓글쓰기"),
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                child: TextField(
+                  style: new TextStyle(color: Colors.white),
+                  controller: replyController,
+                  decoration: InputDecoration(
+                    hintText: "댓글을 입력해주세요 :)",
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 12.0),
+//                    border: OutlineInputBorder(
+//                      borderSide: BorderSide(
+//                        color: Colors.red,
+//                        width: 30
+//                      ),
+//
+//                    ),
+//                    focusedBorder: OutlineInputBorder(
+////                      borderSide: BorderSide(
+//////                      color: Colors.white,
+////                      width: 30
+////                      ),
+////
+////                    ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                        color: Colors.white,
+                        width: 2,
+                        ),
+                      ),
+
+                      prefixIcon: Icon(
+                        Icons.textsms,
+                        color: Colors.white,
+                      ),
+
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.send, color: Colors.white),
+              onPressed: () {
+                uploadReply();
+              },
+
+            ),
+          ],
+        )
+      ],
+      ),
+    ),
+
+//      _ReplyListSection(),
+//      _RelatedItemSection(),
     ]
     );
   }
+
+
   void _showalert(){
     AlertDialog dialog = AlertDialog(
         content: Container(
@@ -286,6 +440,7 @@ class _DetailPageState extends State<DetailPage> {
                         child: Text("확인",style:TextStyle(color:Colors.white,fontSize: 15.0)),
                         color: Colors.orangeAccent,
                         onPressed: (){
+                          uploadTransaction();
                           Navigator.of(context).pop();
                         },
                       ),
