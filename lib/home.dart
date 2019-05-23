@@ -4,7 +4,7 @@ import 'package:async/async.dart';
 import 'detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'myPage.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -102,7 +102,8 @@ class _HomePageState extends State<HomePage> {
                 title: Text("마이페이지",style:TextStyle(color:Colors.white)),
 
                 onTap: () {
-                  Navigator.pushNamed(context, '/myPage');
+                  Navigator.push(context,MaterialPageRoute(builder:(context)=>MyPage(user:user)));
+//                  Navigator.pushNamed(context, '/myPage');
 
                 },
               ),
