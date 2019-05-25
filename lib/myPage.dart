@@ -110,7 +110,7 @@ class _UserInfoState extends State<_UserInfoSection> {
                       children:[
                         Image.network(imageUrl,width:100.0,height:100.0),
                         SizedBox(width:30),
-                        Text(myName,style: TextStyle(fontSize: 20.0)),
+                        Text(myName,style: TextStyle(fontSize: 20.0, color:Colors.white)),
                       ]
                   ),
                 ),
@@ -159,11 +159,11 @@ class _UserInfoState extends State<_UserInfoSection> {
 //                          title: Text(item.expandedValue),
                           subtitle:  StreamBuilder<QuerySnapshot>(
                               stream:
-                              _data[0].isExpanded?
-                              Firestore.instance.collection('Items').where('seller', isEqualTo: userUID).snapshots():
-                              _data[1].isExpanded?
+                              item.expandedValue == 0?
                               Firestore.instance.collection('Transactions').where('buyer', isEqualTo: userUID).snapshots():
-                              Firestore.instance.collection('Items').where('favoritelist', isEqualTo: userUID).snapshots(),
+                              item.expandedValue == 1?
+                              Firestore.instance.collection('Items').where('seller', isEqualTo: userUID).snapshots():
+                              Firestore.instance.collection('Items').where('likedUser', arrayContains: userUID).snapshots(),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) return LinearProgressIndicator();
                                 if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white));
@@ -177,7 +177,7 @@ class _UserInfoState extends State<_UserInfoSection> {
                                         shrinkWrap: true,
                                         childAspectRatio: 2/3,
                                         physics: ScrollPhysics(), // 스크롤 가능하게 해줌
-                                        children: snapshot.data.documents.map((data) => _buildListItem(context, data)).toList(),
+                                        children: snapshot.data.documents.map((data) => _buildListItem(context, data, item.expandedValue)).toList(),
                                       )
                                     ],
                                   ),
@@ -197,66 +197,67 @@ class _UserInfoState extends State<_UserInfoSection> {
     );
 
                     }
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document, int index) {
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-    ClipRRect(
-    borderRadius: BorderRadius.circular(20.0),
-    child: Container(
-    width: 180,
-    height: 100,
-    child: ConstrainedBox(
-    constraints: BoxConstraints.expand(),
-    child: Ink.image(
-    image: NetworkImage(document['imageUrl']),
-//                  fit: BoxFit.fill,
-    fit: BoxFit.cover,
-    child: InkWell( onTap: (){
-    Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
-    },
-    ),
-    ),
-    ),
-    ),
-    ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Container(
+            width: 60,
+            height: 50,
+            child: ConstrainedBox(
+            constraints: BoxConstraints.expand(),
+            child: Ink.image(
+            image: index == 0?
+            NetworkImage(document['imageUrl']) : NetworkImage(document['imageUrl'][0]),
+    //                  fit: BoxFit.fill,
+            fit: BoxFit.cover,
+            child: InkWell( onTap: (){
+              Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
+            },
+            ),
+            ),
+          ),
+        ),
+     ),
 
-    Container(
-    margin: EdgeInsets.all(8.0),
-    child: Text(document['name'],style:TextStyle(color:Colors.white))
-    ),
-        ]
-    );
-                  }
+        Container(
+        margin: EdgeInsets.all(8.0),
+        child: Text(document['name'].toString(),style:TextStyle(color:Colors.black,fontSize: 7))
+        ),
+            ]
+        );
+                      }
   }
-class Item {
-  Item({
-    this.expandedValue,
-    this.headerValue,
-    this.isExpanded = false,
-  });
+  class Item {
+    Item({
+      this.expandedValue,
+      this.headerValue,
+      this.isExpanded = false,
+    });
 
-  int expandedValue;
-  String headerValue;
-  bool isExpanded;
-}
+    int expandedValue;
+    String headerValue;
+    bool isExpanded;
+  }
 List<Item> generateItems(int numberOfItems) {
   return List.generate(numberOfItems, (int index) {
-    return index == 1?
+    return index == 0?
     Item(
       headerValue: '대여중인 상품',
-      expandedValue: 1,
+      expandedValue: 0,
     ):
-        index == 2?
+        index == 1?
         Item(
           headerValue: '내 상품',
-          expandedValue: 2,
+          expandedValue: 1,
         ):
             Item(
               headerValue: '찜한상품',
-              expandedValue: 3);
+              expandedValue: 2);
 
 
   });

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'detail.dart';
 import 'map.dart';
+import 'package:intl/intl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter/services.dart';
 
@@ -21,6 +22,7 @@ double lattitude = 0;
 double longitude = 0;
 List<dynamic> stime = [];
 List<dynamic> etime = [];
+var formatDate = DateFormat('yyyy.MM.dd');
 class AddItemPage extends StatefulWidget {
 
   @override
@@ -113,7 +115,9 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
     itemPriceController.clear();
     itemLocationController.clear();
     itemContentController.clear();
-
+    itemDateController.clear();
+    stime.clear();
+    etime.clear();
   }
 
   void uploadPic() async {
@@ -330,8 +334,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         ),
                       ),
                     ),
-                    RaisedButton(
-                      child: Text("지도에서 선택"),
+                    IconButton(
+                      icon: Icon(Icons.map,color:Colors.white),
                       onPressed: () {
 //                        Navigator.pushNamed(context,'/map');
                         goToMapScreen();
@@ -341,28 +345,47 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("대여가능기간",style:TextStyle(color:Colors.white))
                     ),
-                    Flexible(
+              SizedBox(width:10),
+              Text(formatDate.format(stime[0])+" - ",style:TextStyle(color:Colors.white) ),
+              Text(formatDate.format(etime[0]),style:TextStyle(color:Colors.white)),
+                IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.calendar_today),
+                onPressed: () async {
+                  final List<DateTime> picked = await DateRagePicker
+                      .showDatePicker(
+                    context: context,
+                    initialFirstDate: new DateTime.now(),
+                    initialLastDate: new DateTime.now(),
+                    firstDate: new DateTime(2015),
+                    lastDate: new DateTime(2020),
+                  );
 
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: TextFormField(
-                          style: new TextStyle(color: Colors.white),
-                          controller: itemDateController,
-                          validator: (value) {
-                            if(value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                          },
-                        ),
-                      ),
-                    ),
+                  if (picked != null && picked.length == 2) {
+                    setState(() {
+                      stime[0] = picked[0];
+                      etime[0]=picked[1];
+                    });
+
+                    print(stime[0].toString() + "end days:" +
+                        etime[0].toString());
+                  }
+                  if (picked != null && picked.length == 1) {
+                    setState(() {
+                      stime[0] = picked[0];
+                      etime[0] = picked[0];
+                    });
+                  }
+
+                },
+              ),
+
                   ],
                 ),
                 Row(
@@ -427,13 +450,16 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //                  Image.file(_image)
                   ],
                 ),
-                MaterialButton(
-                  child: Text('대여등록',style: TextStyle(color: Colors.white)),
-                  color: Colors.orangeAccent,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(220,8,3,8),
+                  child: MaterialButton(
+                    child: Text('대여등록',style: TextStyle(color: Colors.white)),
+                    color: Colors.orangeAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    onPressed: uploadItem,
                   ),
-                  onPressed: uploadItem,
                 ),
 
               ],

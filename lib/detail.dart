@@ -249,8 +249,10 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15.0,5,5,10),
+              padding: const EdgeInsets.fromLTRB(30.0,5,5,10),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
 
                   Row(children: <Widget>[
@@ -273,8 +275,8 @@ class _DetailPageState extends State<DetailPage> {
                         margin: EdgeInsets.all(8.0),
                         child: Text(document['location'],style:TextStyle(color:Colors.white))
                     ),
-                    RaisedButton(
-                      child: Text("지도에서 보기"),
+                    IconButton(
+                      icon:Icon(Icons.map,color: Colors.white),
                       onPressed: () {
                         double lng = 127.108625;
                         double lat = 37.365952;
@@ -310,10 +312,10 @@ class _DetailPageState extends State<DetailPage> {
             child: Text(document['description'],style:TextStyle(color:Colors.white))
         ),
       ),
-      RaisedButton(
-        child: Text("더보기 아직안함",),
-        onPressed: (){},
-      ),
+//      RaisedButton(
+//        child: Text("더보기 아직안함",),
+//        onPressed: (){},
+//      ),
 
 
 
@@ -389,23 +391,23 @@ class _DetailPageState extends State<DetailPage> {
 
 //      document['reply'] != null ? {Text("yes")} : Text("no"),
 
-      if(document['reply'] == null) Text("댓글이 없습니다")
+      if(document['reply'] == null) Text("댓글이 없습니다",style: TextStyle(color: Colors.white))
       else
         for (var reply in document['reply'])
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    if(reply['name'] == null) Text("이름없음")
-                    else Text(reply['name']),
-                    Text('${formatterHour.format(DateTime.fromMillisecondsSinceEpoch(reply['date'].seconds * 1000 + 60*60*9*1000)) }'),
+                    if(reply['name'] == null) Text("이름없음 ",style: TextStyle(color: Colors.white))
+                    else Text(reply['name']+" ",style: TextStyle(color: Colors.white)),
+                    Text('${formatterHour.format(DateTime.fromMillisecondsSinceEpoch(reply['date'].seconds * 1000 + 60*60*9*1000)) }',style: TextStyle(color: Colors.white)),
                   ],
                 ),
                 Row(
                   children: <Widget>[
-                    Text(reply['content'])
+                    Text(reply['content'],style: TextStyle(color: Colors.white))
                   ],
                 ),
                 Divider(
@@ -421,7 +423,7 @@ class _DetailPageState extends State<DetailPage> {
       padding: EdgeInsets.all(8.0),
       child: Column(
       children: <Widget>[
-        Text("댓글쓰기"),
+        Text("댓글쓰기",style: TextStyle(color: Colors.white)),
         Row(
           children: <Widget>[
             Flexible(

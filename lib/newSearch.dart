@@ -169,7 +169,7 @@ class _SearchPageState extends State<SearchPage> {
             child: ConstrainedBox(
               constraints: BoxConstraints.expand(),
               child: Ink.image(
-                image: NetworkImage(document['imageUrl']),
+                image: NetworkImage(document['imageUrl'][0]),
 //                  fit: BoxFit.fill,
                 fit: BoxFit.cover,
                 child: InkWell( onTap: (){
