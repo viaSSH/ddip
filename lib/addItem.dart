@@ -5,6 +5,7 @@ import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'detail.dart';
 import 'map.dart';
@@ -13,11 +14,14 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter/services.dart';
 
 final itemCategoryController =  TextEditingController();
+final itemSubCategoryController =  TextEditingController();
 final itemNameController =  TextEditingController();
 final itemPriceController =  TextEditingController();
 final itemLocationController =  TextEditingController();
 final itemDateController =  TextEditingController();
 final itemContentController =  TextEditingController();
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 double lattitude = 0;
 double longitude = 0;
 List<dynamic> stime = [];
@@ -90,14 +94,16 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //        SnackBar(content: Text("$result"), duration: Duration(seconds: 3),));
   }
 
-  void uploadItem() {
+  void uploadItem() async{
     DocumentReference docR = Firestore.instance.collection('Items').document();
-
+    final FirebaseUser user = await _auth.currentUser();
     docR.setData({
       'category': _SelectedCategory,
       'name': itemNameController.text,
       'price': itemPriceController.text,
       'location': itemLocationController.text,
+      'subCategory' :itemSubCategoryController.text,
+      'seller': user.uid,
       'description': itemContentController.text,
 //      'imageUrl': imageUrl,
       'imageUrl': imageUrls,
@@ -292,6 +298,31 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("세부항목",style:TextStyle(color:Colors.white))
+                    ),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          style: new TextStyle(color: Colors.white),
+                          controller: itemSubCategoryController,
+                          validator: (value) {
+                            if(value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+
+                  children: <Widget>[
+                    Container(
+                        width: 60,
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("거래가격",style:TextStyle(color:Colors.white))
                     ),
                     Flexible(
@@ -451,7 +482,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(220,8,3,8),
+                  padding: const EdgeInsets.fromLTRB(160,8,8,8),
                   child: MaterialButton(
                     child: Text('대여등록',style: TextStyle(color: Colors.white)),
                     color: Colors.orangeAccent,
