@@ -122,8 +122,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
     itemLocationController.clear();
     itemContentController.clear();
     itemDateController.clear();
-    stime.clear();
-    etime.clear();
+//    stime.clear();
+//    etime.clear();
   }
 
   void uploadPic() async {
@@ -383,7 +383,9 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         child: Text("대여가능기간",style:TextStyle(color:Colors.white))
                     ),
               SizedBox(width:10),
+              stime.isEmpty?  Text(formatDate.format(DateTime.now())+" - ",style:TextStyle(color:Colors.white) ):
               Text(formatDate.format(stime[0])+" - ",style:TextStyle(color:Colors.white) ),
+                    etime.isEmpty?  Text(formatDate.format(DateTime.now()),style:TextStyle(color:Colors.white)):
               Text(formatDate.format(etime[0]),style:TextStyle(color:Colors.white)),
                 IconButton(
                 color: Colors.white,
@@ -401,8 +403,9 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   if (picked != null && picked.length == 2) {
                     setState(() {
                       stime[0] = picked[0];
-                      etime[0]=picked[1];
+                      etime[0] = picked[1];
                     });
+
 
                     print(stime[0].toString() + "end days:" +
                         etime[0].toString());
