@@ -44,7 +44,6 @@ class MyApp extends StatelessWidget {
         '/addItem': (context) => AddItemPage(),
         '/myPage': (context) => MyPage(),
         '/map': (context) => MapPage(),
-
       },
     );
   }

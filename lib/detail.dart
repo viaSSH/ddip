@@ -224,7 +224,7 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     stime = List<dynamic>.from(document['stime']);
     etime = List<dynamic>.from(document['etime']);
-
+    var formattedDate = DateFormat('yyyy.MM.dd');
 
 
 
@@ -288,6 +288,12 @@ class _DetailPageState extends State<DetailPage> {
                       },
                     )
                   ]),
+                  Row(children: <Widget>[
+                  Text("대여기간",style:TextStyle(color:Colors.grey)),
+                  Container(
+                  margin: EdgeInsets.all(8.0),
+                  child: Text(formattedDate.format(document['stime'][0].toDate())+" - " + formattedDate.format(document['etime'][0].toDate()),style:TextStyle(color:Colors.white))
+                  ),]),
                   Row(children: <Widget>[
                   Text("찜한사람",style:TextStyle(color:Colors.grey)),
                   Container(

@@ -24,8 +24,8 @@ final itemContentController =  TextEditingController();
 final FirebaseAuth _auth = FirebaseAuth.instance;
 double lattitude = 0;
 double longitude = 0;
-List<dynamic> stime = [];
-List<dynamic> etime = [];
+
+
 var formatDate = DateFormat('yyyy.MM.dd');
 class AddItemPage extends StatefulWidget {
 
@@ -71,7 +71,10 @@ class _AddItemFormSection extends StatefulWidget {
 }
 
 class _AddItemFormSectionState extends State<_AddItemFormSection> {
-
+//  DateTime _stime = DateTime.now();
+//  DateTime _etime = DateTime.now();
+  List<dynamic> _stime = [DateTime.now()];
+  List<dynamic> _etime = [DateTime.now()];
   FirebaseStorage _storage = FirebaseStorage.instance;
 
   final _addItemFormKey = GlobalKey<FormState>();
@@ -107,8 +110,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'description': itemContentController.text,
 //      'imageUrl': imageUrl,
       'imageUrl': imageUrls,
-      'stime' : stime,
-      'etime' : etime,
+      'stime' : _stime,
+      'etime' : _etime,
       'latitude': lattitude,
       'longitude': longitude,
       'like': 0,
@@ -120,6 +123,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
     itemNameController.clear();
     itemPriceController.clear();
     itemLocationController.clear();
+    itemSubCategoryController.clear();
     itemContentController.clear();
     itemDateController.clear();
 //    stime.clear();
@@ -383,11 +387,11 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         child: Text("대여가능기간",style:TextStyle(color:Colors.white))
                     ),
               SizedBox(width:10),
-              stime.isEmpty?  Text(formatDate.format(DateTime.now())+" - ",style:TextStyle(color:Colors.white) ):
-              Text(formatDate.format(stime[0])+" - ",style:TextStyle(color:Colors.white) ),
-                    etime.isEmpty?  Text(formatDate.format(DateTime.now()),style:TextStyle(color:Colors.white)):
-              Text(formatDate.format(etime[0]),style:TextStyle(color:Colors.white)),
-                IconButton(
+              Text(formatDate.format(_stime[0])+" - ",style:TextStyle(color:Colors.white) ),
+              Text(formatDate.format(_etime[0]),style:TextStyle(color:Colors.white)),
+// Text(etime.toString(),style:TextStyle(color:Colors.white)),
+
+                    IconButton(
                 color: Colors.white,
                 icon: Icon(Icons.calendar_today),
                 onPressed: () async {
@@ -402,18 +406,19 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 
                   if (picked != null && picked.length == 2) {
                     setState(() {
-                      stime[0] = picked[0];
-                      etime[0] = picked[1];
+                      _stime[0] = picked[0];
+                      _etime[0] = picked[1];
                     });
 
 
-                    print(stime[0].toString() + "end days:" +
-                        etime[0].toString());
+                    print(_stime[0]);
+                    print(picked[0]);
                   }
+
                   if (picked != null && picked.length == 1) {
                     setState(() {
-                      stime[0] = picked[0];
-                      etime[0] = picked[0];
+                      _stime[0] = picked[0];
+                      _etime[0] = picked[0];
                     });
                   }
 
@@ -492,7 +497,10 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)
                     ),
-                    onPressed: uploadItem,
+                      onPressed: () {
+                        uploadItem();
+                        Navigator.of(context).pop();
+                      },
                   ),
                 ),
 
