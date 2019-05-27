@@ -93,8 +93,7 @@ class _InitPageState extends State<InitPage> {
         .where('uid', isEqualTo: signedInUser.uid)
         .snapshots()
         .listen((data) {
-      if (data.documents[0]['name'] != null) {
-        print(data.documents[0]['name']);
+      if (true) {
         Navigator.push(
             context,
             new MaterialPageRoute(
