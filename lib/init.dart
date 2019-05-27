@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home.dart';
-
+import 'register.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -14,7 +15,6 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -29,7 +29,6 @@ class _InitPageState extends State<InitPage> {
             },
           ),
           SizedBox(height: 100.0),
-
           SizedBox(height: 50.0),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 40),
@@ -75,26 +74,49 @@ class _InitPageState extends State<InitPage> {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    final FirebaseUser user =
-    await _auth.signInWithCredential(credential);
+    final FirebaseUser user = await _auth.signInWithCredential(credential);
 
     final FirebaseUser signedInUser = await _auth.currentUser();
     assert(user.uid == signedInUser.uid);
 
-    print('Signed in as ${signedInUser.displayName}');
-    //
-//    Navigator.pushNamed(context, '/home', arguments: signedInUser);
-    Navigator.push(context, new MaterialPageRoute(builder: (context)
-    => new HomePage(user: signedInUser, auth: _auth, googleSignIn: _googleSignIn)));
-    setState(() {
+    print('Signed in as ${signedInUser.uid}');
+
+    Firestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: signedInUser.uid)
+        .snapshots()
+        .listen((data) {
+      if (true) {
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new HomePage(
+                    user: signedInUser,
+                    auth: _auth,
+                    googleSignIn: _googleSignIn)));
+      } else {
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => new RegisterPage(
+                    user: signedInUser,
+                    auth: _auth,
+                    googleSignIn: _googleSignIn)));
+      }
     });
+
+//    final DocumentReference documentReference = Firestore.instance.document("myData/dummy");
+
+//    Navigator.pushNamed(context, '/home', arguments: signedInUser);
+
+    setState(() {});
   }
 
   void _signInAnonymously() async {
@@ -102,9 +124,7 @@ class _InitPageState extends State<InitPage> {
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
     Navigator.of(context).pushNamed('/home');
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _signOut() async {
@@ -118,13 +138,4 @@ class _InitPageState extends State<InitPage> {
   }
 }
 
-
 // class that contains both a customizable title and message.
-
-
-
-
-
-
-
-
