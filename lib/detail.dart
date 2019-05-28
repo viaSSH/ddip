@@ -42,29 +42,33 @@ class _DetailPageState extends State<DetailPage> {
 
   void uploadTransaction() async {
     DocumentReference docTransR = Firestore.instance.collection('Transactions').document();
-    DocumentReference docItemsR = Firestore.instance.collection('Transactions').document();
+    DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
 
+    final FirebaseUser user = await _auth.currentUser();
 //    print(document.documentID);
 //    print(_date);
 //    print(_date2);
 
-//    docTransR.setData({
-//      'buyer': 'a',
+    docTransR.setData({
+      'buyer': user.uid,
 //      'seller': 'b', // document의 owner 참조해서 추가하기
-//      'item': document.documentID,
-//      'date': DateTime.now(),
-//      'rentStart': _date,
-//      'rentEnd': _date2
-//
-//    }
-//    );
+      'seller': document['seller'],
+      'item': document.documentID,
+      'date': DateTime.now(),
+      'rentStart': _date,
+      'rentEnd': _date2,
+      'imageUrl': document['imageUrl'][0],
+      'name': document['name']
+
+    }
+    );
 
     docItemsR.updateData({
      'available': false
     }
     );
 
-    final FirebaseUser user = await _auth.currentUser();
+
 
     print(user);
   }
@@ -389,7 +393,9 @@ class _DetailPageState extends State<DetailPage> {
         child: Text("대화하기",style: TextStyle(color: Colors.white, fontSize: 15)),
         minWidth: 100,
         height: 40,
-        onPressed: (){},
+        onPressed: (){
+          Navigator.pushNamed(context, '/chat', arguments: {'seller': 'a', 'buyer': 'b'});
+        },
         )
         ],
       ),

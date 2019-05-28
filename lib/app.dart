@@ -8,6 +8,7 @@ import 'myPage.dart';
 
 import'newSearch.dart';
 import 'map.dart';
+import 'chat.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         '/addItem': (context) => AddItemPage(),
         '/myPage': (context) => MyPage(),
         '/map': (context) => MapPage(),
+        '/chat': (context) => ChatPage(),
 
       },
     );

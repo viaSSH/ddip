@@ -226,7 +226,7 @@ class _UserInfoState extends State<_UserInfoSection> {
 
         Container(
         margin: EdgeInsets.all(8.0),
-        child: Text(document['name'].toString(),style:TextStyle(color:Colors.black,fontSize: 7))
+        child: Text(document['name'].toString(),style:TextStyle(color:Colors.black,fontSize: 10))
         ),
 
             ]
