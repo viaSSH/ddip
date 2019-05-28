@@ -116,13 +116,13 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.indigo,
+          color: Colors.orangeAccent,
           child: ListView(
             children: <Widget>[
               DrawerHeader(
                 child: Text("${user.displayName} 회원님 반갑습네다",style:TextStyle(color:Colors.white)),
                 decoration: BoxDecoration(
-                  color: Colors.blue
+                  color: Colors.orange
                 ),
               ),
               ListTile(
@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                       children:[
                         Text("가격: "+
-                            document['price'].toString(),
+                            document['price'].toString() + "원",
                             style:TextStyle(fontSize: 14.0, color: Colors.white)
                         ),
                       ]
