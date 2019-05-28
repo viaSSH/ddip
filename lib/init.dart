@@ -13,6 +13,7 @@ class InitPage extends StatefulWidget {
   @override
   _InitPageState createState() => _InitPageState();
 }
+final String defUrl = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
 
 class _InitPageState extends State<InitPage> {
   @override
@@ -20,45 +21,63 @@ class _InitPageState extends State<InitPage> {
     // TODO: implement build
     return Scaffold(
       body: ListView(
-        children: <Widget>[
-          Text("second page"),
-          RaisedButton(
-            child: Text("move to main page"),
-            onPressed: () {
-              Navigator.pushNamed(context, '/home');
-            },
-          ),
-          SizedBox(height: 100.0),
-          SizedBox(height: 50.0),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 40),
-            child: ButtonTheme(
-              minWidth: 10.0,
-              child: ButtonBar(
-                alignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  MaterialButton(
-                    child:
-                        Text('sign in', style: TextStyle(color: Colors.white)),
-                    color: Color.fromARGB(255, 25, 14, 78),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-//                    onPressed: () => _pushPage(context, SignInPage()),
-                    onPressed: () => _signInWithGoogle(),
+          children: <Widget>[
+            RaisedButton(
+              child: Text("move to main page"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+            ),
+            SizedBox(height: 100.0),
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(0),
+                child: Container(
+                  width: 250,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(image: NetworkImage(defUrl),
+                        fit: BoxFit.cover
+                    ),
                   ),
-                  MaterialButton(
-                    child: Text('anonymous',
-                        style: TextStyle(color: Colors.white)),
-                    color: Color.fromARGB(255, 25, 14, 78),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () => _signInAnonymously(),
-                  ),
-                ],
+                ),
               ),
             ),
-          )
-        ],
+            SizedBox(height:50),
+
+            Center(
+              child: Container(
+                child:MaterialButton(
+                  minWidth: 200,
+                  height: 40,
+                  child:
+                  Text('구글 로그인', style: TextStyle(color: Colors.white)),
+//                  color: Color.fromARGB(255, 25, 14, 78),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(color: Colors.white, width: 1.0),
+                  ),
+                  onPressed: () => _signInWithGoogle(),
+                ),
+              ),
+            ),
+            SizedBox(height:10),
+            Center(
+              child: Container(
+                  child: MaterialButton(
+                    minWidth: 200,
+                    height: 40,
+                    child: Text('익명 로그인',
+                        style: TextStyle(color: Colors.white)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      side: BorderSide(color: Colors.white, width: 1.0),
+                    ),
+                    onPressed: () => _signInAnonymously(),
+                  )
+              ),
+            ),
+          ]
       ),
       backgroundColor: Colors.orangeAccent,
     );
@@ -74,7 +93,7 @@ class _InitPageState extends State<InitPage> {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
     final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
