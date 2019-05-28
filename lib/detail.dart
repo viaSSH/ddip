@@ -296,7 +296,7 @@ class _DetailPageState extends State<DetailPage> {
                   Text("대여기간",style:TextStyle(color:Colors.grey)),
                   Container(
                   margin: EdgeInsets.all(8.0),
-                  child: Text(formattedDate.format(document['stime'][0].toDate())+" - " + formattedDate.format(document['etime'][0].toDate()),style:TextStyle(color:Colors.white))
+//                  child: Text(formattedDate.format(document['stime'][0].toDate())+" - " + formattedDate.format(document['etime'][0].toDate()),style:TextStyle(color:Colors.white))
                   ),]),
                   Row(children: <Widget>[
                   Text("찜한사람",style:TextStyle(color:Colors.grey)),
@@ -394,7 +394,7 @@ class _DetailPageState extends State<DetailPage> {
         minWidth: 100,
         height: 40,
         onPressed: (){
-          Navigator.pushNamed(context, '/chat', arguments: {'seller': 'a', 'buyer': 'b'});
+          Navigator.pushNamed(context, '/chat', arguments: {'seller': 'wC1Nn91XtwfioOVuJeuErdzECpf2', 'buyer': 'wugDFAj2UYO51PdlsWSuyLJuBXq1', 'uid': document.documentID});
         },
         )
         ],

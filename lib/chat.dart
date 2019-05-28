@@ -7,7 +7,9 @@ import 'dart:io';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final replyController =  TextEditingController();
 
-
+String chatUid = "";
+String senderUid = "";
+String receiverUid = "";
 
 class ChatPage extends StatefulWidget {
   @override
@@ -17,10 +19,35 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
+  final _sendMsgController = TextEditingController();
 
 
-    Widget build(BuildContext context) {
-//      final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+  void _handleSubmit(String message) async {
+    final FirebaseUser user = await _auth.currentUser();
+
+    _sendMsgController.text = "";
+    var db = Firestore.instance;
+    db.collection("ChatRoom").document(chatUid).updateData({
+      'messages': FieldValue.arrayUnion([
+        {
+          'content': message,
+          'userUid': user.uid,
+          'name': user.displayName,
+        }
+      ])
+    }
+    );
+  }
+
+
+
+  Widget build(BuildContext context) {
+      final Map args = ModalRoute.of(context).settings.arguments;
+//      chatUid = args['uid'];
+//      senderUid = args['buyer'];
+      final buyer = args['buyer'];
+      final seller = args['seller'];
+      print(args['seller']);
 
       return Scaffold(
         appBar: AppBar(
@@ -31,34 +58,87 @@ class _ChatPageState extends State<ChatPage> {
           margin: EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
+              Text("buyer : " + args['buyer']),
+              Text("seller : " + args['seller']),
+              Text("item : " + args['uid']),
               Flexible(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: Firestore.instance.collection('ChatRoom').where('userA', isEqualTo: "aaa").where('userB', isEqualTo: 'bbb').snapshots(),
+                  stream: Firestore.instance.collection('ChatRoom')
+                      .where('seller', isEqualTo: seller)
+//                      .where('buyer', isEqualTo: buyer).snapshots(),
+                      .where('buyer', isEqualTo: buyer)
+                      .where('itemUid', isEqualTo: args['uid']).snapshots(),
                   builder: (context, snapshot) {
-                    if(!snapshot.hasData) return Container();
+                    if(!snapshot.hasData){
+                      chatUid = 'chat_' + args['uid'];
+
+                      var db = Firestore.instance;
+                      db.collection("ChatRoom").document(chatUid).setData({
+                        'itemUid': args['uid'],
+                        'buyer': buyer,
+                        'seller': seller,
+                        'messages': []
+                      });
+
+                      return Container(child: Text("nothing"),);
+                    }
+
+
 //                    DocumentSnapshot document = snapshot.data.documents;
 //                    print(document['userA']);
                     return ListView.builder(
                       padding: EdgeInsets.all(8.0),
                       reverse: true,
                       itemBuilder: (_, int index) {
+//                        return _message("a", "b");
                         DocumentSnapshot document = snapshot.data.documents[0];
+                        chatUid = document.documentID;
                         var messageCnt = document['messages'].length;
 
                         bool isOwnMessage = false;
-                        if(document['messages'][messageCnt - index - 1]['name'] == "승수") isOwnMessage = true;
+                        print("db name : " + document['messages'][messageCnt - index - 1]['userUid']);
+                        print("select name : " + args['seller']);
+                        if(document['messages'][messageCnt - index - 1]['userUid'] == args['seller']) isOwnMessage = true;
                         return isOwnMessage ?
-                        _ownMessage(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name'])
+                        _message(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name'])
                             :
-                        _message(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name']);
+                        _ownMessage(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name']);
 
                       },
-//                      itemCount: 2,//snapshot.data.documents[0]['messages'][0].length
-                      itemCount: snapshot.data.documents.first['messages'].length,
+//                      itemCount: 1,//snapshot.data.documents[0]['messages'][0].length
+                        itemCount: snapshot.data.documents.isEmpty ? 0 : snapshot.data.documents.first['messages'].length,
+//                      itemCount: snapshot.data.documents.first['messages'].length,
                     );
                   },
                 ),
-              )
+              ),
+              Divider(height: 1.0),
+              Container(
+                margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    new Flexible(
+                      child: new TextField(
+                        controller: _sendMsgController,
+                        onSubmitted: _handleSubmit,
+                        decoration:
+                        new InputDecoration.collapsed(hintText: "send message"),
+                      ),
+                    ),
+                    new Container(
+                      child: new IconButton(
+                          icon: new Icon(
+                            Icons.send,
+                            color: Colors.blue,
+                          ),
+                          onPressed: () {
+                            _handleSubmit(_sendMsgController.text);
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+
             ],
           ),
         )
