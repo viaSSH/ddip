@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'home.dart';
 
 final userNameController = TextEditingController();
 final userEmailController = TextEditingController();
@@ -17,31 +18,28 @@ List<dynamic> stime = [];
 List<dynamic> etime = [];
 
 class RegisterPage extends StatefulWidget {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  RegisterPage({Key key,
+  RegisterPage({
+    Key key,
     @required this.user,
     @required this.auth,
     @required this.googleSignIn,
   });
 
-
   @override
-  _RegisterPageState createState(){
+  _RegisterPageState createState() {
     return _RegisterPageState(
       user: user,
       auth: auth,
       googleSignIn: googleSignIn,
     );
   }
-
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
@@ -62,10 +60,12 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Color.fromARGB(255, 25, 14, 78),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(8.0,20,8.0,10),
+        padding: const EdgeInsets.fromLTRB(8.0, 20, 8.0, 10),
         child: ListView(
           children: <Widget>[
-            Center(child: Text("Sign up",style: TextStyle(fontSize: 25))),
+            Center(
+                child: Text("Sign up",
+                    style: TextStyle(color: Colors.white, fontSize: 25))),
             _RegisterFormSection(
               user: user,
               auth: auth,
@@ -80,35 +80,34 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class _RegisterFormSection extends StatefulWidget {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  _RegisterFormSection({Key key,
+  _RegisterFormSection({
+    Key key,
     @required this.user,
     @required this.auth,
     @required this.googleSignIn,
   });
 
   @override
-  _RegisterFormSectionState createState(){
+  _RegisterFormSectionState createState() {
     return _RegisterFormSectionState(
       user: user,
       auth: auth,
       googleSignIn: googleSignIn,
     );
   }
-
 }
 
 class _RegisterFormSectionState extends State<_RegisterFormSection> {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  _RegisterFormSectionState({Key key,
+  _RegisterFormSectionState({
+    Key key,
     @required this.user,
     @required this.auth,
     @required this.googleSignIn,
@@ -121,8 +120,9 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 
   File _image;
 
-  void uploadItem() {
-    DocumentReference docR = Firestore.instance.collection('Users').document();
+  void userRegister() {
+    DocumentReference docR =
+        Firestore.instance.collection('Users').document(user.uid);
 
     docR.setData({
       'uid': user.uid,
@@ -140,17 +140,21 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
     userPsswdController.clear();
     userLocationController.clear();
     userPhoneController.clear();
-    Navigator.pop(context);
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (context) => new HomePage(
+                user: user, auth: auth, googleSignIn: googleSignIn)));
   }
 
   void uploadPic() async {
-
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = image;
     });
     //Create a reference to the location you want to upload to in firebase
-    StorageReference reference = _storage.ref().child("/items/"+DateTime.now().toString() + ".jpg");
+    StorageReference reference =
+        _storage.ref().child("/items/" + DateTime.now().toString() + ".jpg");
 
     //Upload the file to firebase
     StorageUploadTask uploadTask = reference.putFile(image);
@@ -166,13 +170,12 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 //      _test = url.toString();
 //    });
 //    print("this" + url);
-
   }
 
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(16.0),
-        margin: EdgeInsets.fromLTRB(16.0,50,16.0,10),
+        margin: EdgeInsets.fromLTRB(16.0, 50, 16.0, 10),
         decoration: BoxDecoration(
           borderRadius: new BorderRadius.circular(10.0),
           color: Color.fromARGB(50, 0, 0, 0),
@@ -186,13 +189,12 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("이름")
-                    ),
+                        child:
+                            Text("이름", style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -200,18 +202,23 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           style: new TextStyle(color: Colors.white),
                           controller: userNameController,
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("이메일")
-                    ),
+                        child:
+                            Text("이메일", style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -219,58 +226,73 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           style: new TextStyle(color: Colors.white),
                           controller: userEmailController,
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("닉네임")
-                    ),
+                        child: Text(
+                          "닉네임",
+                          style: TextStyle(color: Colors.white),
+                        )),
                     Flexible(
-
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextFormField(
                           style: new TextStyle(color: Colors.white),
                           controller: userNickController,
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("비밀번호")
-                    ),
+                        child: Text("비밀번호",
+                            style: TextStyle(color: Colors.white))),
                     Flexible(
-
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: TextFormField(
                           style: new TextStyle(color: Colors.white),
                           controller: userPsswdController,
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("주요거래장소")
-                    ),
+                        child: Text("주요거래장소",
+                            style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -279,18 +301,23 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           controller: userLocationController,
                           maxLines: null, //grow automatically
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-
                   children: <Widget>[
                     Container(
                         width: 60,
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("휴대폰번호")
-                    ),
+                        child: Text("휴대폰번호",
+                            style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -299,9 +326,15 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           controller: userPhoneController,
                           maxLines: null, //grow automatically
                           validator: (value) {
-                            if(value.isEmpty) {
+                            if (value.isEmpty) {
                               return 'Please enter some text';
-                            }},),),),],),
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
 // 사진첨부기능
 //                Row(
 //                  mainAxisAlignment: MainAxisAlignment.start,
@@ -339,18 +372,15 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 //                  ],
 //                ),
                 MaterialButton(
-                  child: Text('Sign up',style: TextStyle(color: Colors.white)),
+                  child: Text('Sign up', style: TextStyle(color: Colors.white)),
                   color: Colors.orangeAccent,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  onPressed: uploadItem,
+                      borderRadius: BorderRadius.circular(10)),
+                  onPressed: userRegister,
                 ),
-
               ],
             ),
           ),
-        )
-    );
+        ));
   }
 }

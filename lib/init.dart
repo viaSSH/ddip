@@ -89,11 +89,12 @@ class _InitPageState extends State<InitPage> {
     print('Signed in as ${signedInUser.uid}');
 
     Firestore.instance
-        .collection('users')
-        .where('uid', isEqualTo: signedInUser.uid)
-        .snapshots()
-        .listen((data) {
-      if (true) {
+        .collection('Users')
+        .document(signedInUser.uid)
+        .get()
+        .then((value) {
+      print(value.data);
+      if (value.data != null) {
         Navigator.push(
             context,
             new MaterialPageRoute(
@@ -111,6 +112,8 @@ class _InitPageState extends State<InitPage> {
                     googleSignIn: _googleSignIn)));
       }
     });
+//    var docId = Firestore.instance
+//        .collection('Users').getDocuments() ;
 
 //    final DocumentReference documentReference = Firestore.instance.document("myData/dummy");
 
