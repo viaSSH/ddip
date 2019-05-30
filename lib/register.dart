@@ -131,6 +131,7 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 
   final _registerFormKey = GlobalKey<FormState>();
   String imageUrl;
+  bool pwdmatch ;
 
   File _image;
 
@@ -196,6 +197,7 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
         ),
         child: Form(
           key: _registerFormKey,
+          autovalidate: true,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -309,6 +311,7 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           ),
                           style: new TextStyle(color: Colors.white),
                           controller: userPsswdController,
+                          obscureText: true,
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'Please enter some text';
@@ -319,6 +322,35 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                     ),
                   ],
                 ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        width: 60,
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text("비밀번호 확인",
+                            style: TextStyle(color: Colors.white))),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextFormField(
+                          style: new TextStyle(color: Colors.white),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value != userPsswdController.text) {
+                              pwdmatch = false ;
+                              return 'Password is not matching';
+                            }else{
+                              pwdmatch = true ;
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -422,7 +454,11 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                     color: Color.fromARGB(255, 25, 14, 78),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    onPressed: userRegister,
+                    onPressed: (){
+                      if(pwdmatch){
+                        userRegister();
+                      }
+                    },
                   ),
                 ),
               ],

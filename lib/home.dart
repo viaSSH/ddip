@@ -5,9 +5,9 @@ import 'detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'myPage.dart';
-import 'chart.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'dart:async';
+import 'init.dart';
+import 'deleteuser.dart';
+
 //
 
 class HomePage extends StatefulWidget {
@@ -137,20 +137,24 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                title: Text("판매통계",style:TextStyle(color:Colors.white)),
-                onTap: () {
-                Navigator.push(context,MaterialPageRoute(builder:(context)=>
-                ChartPage(_createSampleData())));
-            //                  Navigator.pushNamed(context, '/myPage');
-
-                },
-              ),
-              ListTile(
                 title: Text("로그아웃",style:TextStyle(color:Colors.white)),
                 onTap: () {
                   _signOut();
                 },
-              )
+              ),
+              ListTile(
+                title: Text("탈퇴",style:TextStyle(color:Colors.white)),
+                onTap: () {
+                  //TODO: 탈퇴 기능
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new DeleteUserPage(
+                              user: user,
+                              auth: auth,
+                              googleSignIn: googleSignIn)));
+                },
+              ),
             ],
           ),
         ),
@@ -246,7 +250,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }
 
 
@@ -474,33 +477,5 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 
   }
 }
-List<charts.Series<OrdinalSales, String>> _createSampleData() {
-  final data = [
-    new OrdinalSales('2014', 5),
-    new OrdinalSales('2015', 25),
-    new OrdinalSales('2016', 100),
-    new OrdinalSales('2017', 75),
-  ];
-
-  return [
-    new charts.Series<OrdinalSales, String>(
-      id: 'Sales',
-      colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-      domainFn: (OrdinalSales sales, _) => sales.year,
-      measureFn: (OrdinalSales sales, _) => sales.sales,
-      data: data,
-    )
-  ];
-}
-
-
-/// Sample ordinal data type.
-class OrdinalSales {
-  final String year;
-  final int sales;
-
-  OrdinalSales(this.year, this.sales);
-}
-
 
 // 배너부분 끝
