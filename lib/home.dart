@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     @required this.auth,
     @required this.googleSignIn,
   });
-
   final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
   DocumentReference docR = Firestore.instance.collection('Items').document();
   var _category = ['물건', '사람', '공간', '노하우'];
@@ -140,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 title: Text("판매통계",style:TextStyle(color:Colors.white)),
                 onTap: () {
                 Navigator.push(context,MaterialPageRoute(builder:(context)=>
-                ChartPage(_createSampleData())));
+                ChartPage(user:user)));
             //                  Navigator.pushNamed(context, '/myPage');
 
                 },
@@ -473,34 +472,5 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 //    );
 
   }
+
 }
-List<charts.Series<OrdinalSales, String>> _createSampleData() {
-  final data = [
-    new OrdinalSales('2014', 5),
-    new OrdinalSales('2015', 25),
-    new OrdinalSales('2016', 100),
-    new OrdinalSales('2017', 75),
-  ];
-
-  return [
-    new charts.Series<OrdinalSales, String>(
-      id: 'Sales',
-      colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-      domainFn: (OrdinalSales sales, _) => sales.year,
-      measureFn: (OrdinalSales sales, _) => sales.sales,
-      data: data,
-    )
-  ];
-}
-
-
-/// Sample ordinal data type.
-class OrdinalSales {
-  final String year;
-  final int sales;
-
-  OrdinalSales(this.year, this.sales);
-}
-
-
-// 배너부분 끝
