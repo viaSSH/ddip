@@ -58,9 +58,10 @@ class _ChatPageState extends State<ChatPage> {
           margin: EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Text("buyer : " + args['buyer']),
-              Text("seller : " + args['seller']),
-              Text("item : " + args['uid']),
+              Text("aaa", style: TextStyle(color: Colors.black),),
+              Text("buyer : " + args['buyer'], style: TextStyle(color: Colors.black),),
+              Text("seller : " + args['seller'], style: TextStyle(color: Colors.black),),
+              Text("item : " + args['uid'], style: TextStyle(color: Colors.black),),
               Flexible(
                 child: StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance.collection('ChatRoom')
@@ -69,8 +70,12 @@ class _ChatPageState extends State<ChatPage> {
                       .where('buyer', isEqualTo: buyer)
                       .where('itemUid', isEqualTo: args['uid']).snapshots(),
                   builder: (context, snapshot) {
-                    if(!snapshot.hasData){
+//                    print(snapshot.data.documents.length);
+//                  print(snapshot.requireData.documents[0]['messages']);
+                    if(!snapshot.data.documents.isNotEmpty){
                       chatUid = 'chat_' + args['uid'];
+
+                      print("no data! " + chatUid);
 
                       var db = Firestore.instance;
                       db.collection("ChatRoom").document(chatUid).setData({
@@ -80,7 +85,7 @@ class _ChatPageState extends State<ChatPage> {
                         'messages': []
                       });
 
-                      return Container(child: Text("nothing"),);
+//                      return Container(child: Text("nothing"),);
                     }
 
 
@@ -96,8 +101,8 @@ class _ChatPageState extends State<ChatPage> {
                         var messageCnt = document['messages'].length;
 
                         bool isOwnMessage = false;
-                        print("db name : " + document['messages'][messageCnt - index - 1]['userUid']);
-                        print("select name : " + args['seller']);
+//                        print("db name : " + document['messages'][messageCnt - index - 1]['userUid']);
+//                        print("select name : " + args['seller']);
                         if(document['messages'][messageCnt - index - 1]['userUid'] == args['seller']) isOwnMessage = true;
                         return isOwnMessage ?
                         _message(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name'])
