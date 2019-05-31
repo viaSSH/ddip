@@ -151,40 +151,48 @@ class _UserInfoState extends State<_UserInfoSection> {
                       children: _data.map<ExpansionPanel>((Item item) {
                       return ExpansionPanel(
                         headerBuilder: (BuildContext context, bool isExpanded) {
-                        return ListTile(
-                          title: Text(item.headerValue),
-                          );
-                          },
-                          body: ListTile(
-//                          title: Text(item.expandedValue),
-                          subtitle:  StreamBuilder<QuerySnapshot>(
-                              stream:
-                              item.expandedValue == 0?
-                              Firestore.instance.collection('Transactions').where('buyer', isEqualTo: userUID).snapshots():
-                              item.expandedValue == 1?
-                              Firestore.instance.collection('Items').where('seller', isEqualTo: userUID).snapshots():
-                              Firestore.instance.collection('Items').where('likedUser', arrayContains: userUID).snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) return LinearProgressIndicator();
-                                if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white));
-                                return Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      GridView.count(
-                                        crossAxisCount: 4,
-                                        shrinkWrap: true,
-                                        childAspectRatio: 2/3,
-                                        physics: ScrollPhysics(), // 스크롤 가능하게 해줌
-                                        children: snapshot.data.documents.map((data) => _buildListItem(context, data, item.expandedValue)).toList(),
-                                      )
-                                    ],
-                                  ),
+                          return Container (
+                                    decoration: new BoxDecoration (
+                                        color: Colors.orangeAccent
+                                    ),
+                                    child: new ListTile (
+                                        title: Text(item.headerValue,style:TextStyle(color:Colors.white))
+                                    )
                                 );
-                              }
-                          ),
+                          },
+                          body: Container(
+
+                            child: ListTile(
+//                          title: Text(item.expandedValue),
+                            subtitle:  StreamBuilder<QuerySnapshot>(
+                                stream:
+                                item.expandedValue == 0?
+                                Firestore.instance.collection('Transactions').where('buyer', isEqualTo: userUID).snapshots():
+                                item.expandedValue == 1?
+                                Firestore.instance.collection('Items').where('seller', isEqualTo: userUID).snapshots():
+                                Firestore.instance.collection('Items').where('likedUser', arrayContains: userUID).snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) return LinearProgressIndicator();
+                                  if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white));
+                                  return Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        GridView.count(
+                                          crossAxisCount: 4,
+                                          shrinkWrap: true,
+                                          childAspectRatio: 2/3,
+                                          physics: ScrollPhysics(), // 스크롤 가능하게 해줌
+                                          children: snapshot.data.documents.map((data) => _buildListItem(context, data, item.expandedValue)).toList(),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                            ),
                          ),
+                          ),
                           isExpanded: item.isExpanded,
                         canTapOnHeader: true,
                           );

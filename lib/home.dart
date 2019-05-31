@@ -5,8 +5,9 @@ import 'detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'myPage.dart';
-import 'init.dart';
-
+import 'chart.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'dart:async';
 //
 
 class HomePage extends StatefulWidget {
@@ -44,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     @required this.auth,
     @required this.googleSignIn,
   });
-
   final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
   DocumentReference docR = Firestore.instance.collection('Items').document();
   var _category = ['물건', '사람', '공간', '노하우'];
@@ -116,13 +116,13 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.indigo,
+          color: Colors.orangeAccent,
           child: ListView(
             children: <Widget>[
               DrawerHeader(
                 child: Text("${user.displayName} 회원님 반갑습네다",style:TextStyle(color:Colors.white)),
                 decoration: BoxDecoration(
-                  color: Colors.blue
+                  color: Colors.orange
                 ),
               ),
               ListTile(
@@ -132,6 +132,15 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(context,MaterialPageRoute(builder:(context)=>
                       MyPage(user:user)));
 //                  Navigator.pushNamed(context, '/myPage');
+
+                },
+              ),
+              ListTile(
+                title: Text("판매통계",style:TextStyle(color:Colors.white)),
+                onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder:(context)=>
+                ChartPage(user:user)));
+            //                  Navigator.pushNamed(context, '/myPage');
 
                 },
               ),
@@ -221,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                       children:[
                         Text("가격: "+
-                            document['price'].toString(),
+                            document['price'].toString() + "원",
                             style:TextStyle(fontSize: 14.0, color: Colors.white)
                         ),
                       ]
@@ -236,6 +245,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 }
 
 
@@ -462,6 +472,5 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 //    );
 
   }
-}
 
-// 배너부분 끝
+}

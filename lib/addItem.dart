@@ -24,6 +24,7 @@ final itemContentController =  TextEditingController();
 final FirebaseAuth _auth = FirebaseAuth.instance;
 double lattitude = 0;
 double longitude = 0;
+final String defUrl = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
 
 
 var formatDate = DateFormat('yyyy.MM.dd');
@@ -100,6 +101,9 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
   void uploadItem() async{
     DocumentReference docR = Firestore.instance.collection('Items').document();
     final FirebaseUser user = await _auth.currentUser();
+    if(imageUrls.isEmpty){
+      imageUrls.add(defUrl);
+    }
     docR.setData({
       'category': _SelectedCategory,
       'name': itemNameController.text,
@@ -490,7 +494,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(160,8,8,8),
+                  padding: const EdgeInsets.fromLTRB(200,8,0,8),
                   child: MaterialButton(
                     child: Text('대여등록',style: TextStyle(color: Colors.white)),
                     color: Colors.orangeAccent,
