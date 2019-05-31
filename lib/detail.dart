@@ -394,9 +394,7 @@ class _DetailPageState extends State<DetailPage> {
         minWidth: 100,
         height: 40,
         onPressed: (){
-//          Navigator.pushNamed(context, '/chat', arguments: {'seller': 'wC1Nn91XtwfioOVuJeuErdzECpf2', 'buyer': 'wugDFAj2UYO51PdlsWSuyLJuBXq1', 'uid': document.documentID});
-    Navigator.pushNamed(context, '/chat', arguments: {'seller': document['seller'], 'buyer': user.uid, 'uid': document.documentID});
-        },
+          Navigator.pushNamed(context, '/chat', arguments: {'seller': document['seller'], 'buyer': user.uid, 'uid': document.documentID});        },
         )
         ],
       ),
