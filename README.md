@@ -1,19 +1,48 @@
-# myddip
+# DDIP
 
-ddip dev
+개발자
+이재익 / 한승수 / 이예림
 
-im mac from seung
-and im window from seung
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## 만물 공유 서비스 어플리케이션
 
-A few resources to get you started if this is your first Flutter project:
+# 같이 공유해요
+- 물품
+- 장소
+- 인력
+- 노하우
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+![ex_screenshot](./imgSrc/ddip_figma.png)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+
+
+#현재기능들
+	- 회원가입
+	- 로그인
+	- 물품검색
+	- 물품 전체보기
+	- 물품 세부보기
+	- 글쓰기
+	- 댓글달기
+	- 거래하기
+	- 내 정보 수정
+	- 내가 거래한 정보
+		- 거래이력
+			- 대여한 것
+			- 대여해 준것
+		- 내 상품 목록 보기
+			- 상품 정보
+			- 상품 대여 상태
+	- 물건 상태바꾸기
+	- 1:1 대화하기
+	- 프로필 사진
+	- 물품 찜하기
+
+
+#추후 추가할 기능
+	- 싱품 외부 공유(카톡, 문자 등등)
+	- 선호 물품 등록하기
+	- 사용자 대여 등급
+	- 대여기간 만료 시 알림 - 메일이나 푸쉬
+
