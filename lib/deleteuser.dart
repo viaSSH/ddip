@@ -215,7 +215,7 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           .document(user.uid)
                           .get()
                           .then((value) {
-                        print("value.data: ${value.data.values.elementAt(5)}");
+                        print("value.data: ${value.data.values}");
                         if (value.data.values.elementAt(5) ==
                             userPsswdController.text) userDelete();
                       });

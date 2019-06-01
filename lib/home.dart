@@ -146,7 +146,6 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 title: Text("탈퇴", style: TextStyle(color: Colors.white)),
                 onTap: () {
-                  //TODO: 탈퇴 기능
                   Navigator.push(
                       context,
                       new MaterialPageRoute(
