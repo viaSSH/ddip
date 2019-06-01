@@ -219,10 +219,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-    );
+    if(snapshot.isEmpty) Navigator.pop(context);
+
+      return ListView(
+        padding: const EdgeInsets.only(top: 20.0),
+        children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+      );
+
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
@@ -334,6 +337,25 @@ class _DetailPageState extends State<DetailPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+
+          document['seller'] == user.uid ?
+            MaterialButton(
+
+            color: Colors.orangeAccent,
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)
+            ),
+            child: Text("정보수정",style: TextStyle(color: Colors.white, fontSize: 15)),
+            minWidth: 100,
+            height: 40,
+            onPressed: (){
+              Navigator.pushNamed(context, '/edit',
+              arguments: document
+              );
+            },
+            )
+          :
+
           MaterialButton(
           color: Colors.orangeAccent,
           minWidth: 250,
@@ -382,6 +404,8 @@ class _DetailPageState extends State<DetailPage> {
           },
           child: Text("대여요청",style: TextStyle(color: Colors.white,fontSize: 15)),
           ),
+
+
 
         SizedBox(width:10),
         MaterialButton(
