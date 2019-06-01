@@ -112,7 +112,7 @@ class _InitPageState extends State<InitPage> {
         .document(signedInUser.uid)
         .get()
         .then((value) {
-      print(value.data);
+      print("data: ${value.data}");
       if (value.data != null) {
         Navigator.push(
             context,
