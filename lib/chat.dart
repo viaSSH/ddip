@@ -58,6 +58,7 @@ class _ChatPageState extends State<ChatPage> {
           margin: EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
+              Text("aaa", style: TextStyle(color: Colors.black),),
               Text("buyer : " + args['buyer'], style: TextStyle(color: Colors.black),),
               Text("seller : " + args['seller'], style: TextStyle(color: Colors.black),),
               Text("item : " + args['uid'], style: TextStyle(color: Colors.black),),
@@ -102,11 +103,12 @@ class _ChatPageState extends State<ChatPage> {
                         bool isOwnMessage = false;
 //                        print("db name : " + document['messages'][messageCnt - index - 1]['userUid']);
 //                        print("select name : " + args['seller']);
-                        if(document['messages'][messageCnt - index - 1]['userUid'] == args['buyer']) isOwnMessage = true;
+                        if(document['messages'][messageCnt - index - 1]['userUid'] == args['seller']) isOwnMessage = true;
                         return isOwnMessage ?
-                        _ownMessage(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name'])
-                          :
-                        _message(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name']);
+                        _message(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name'])
+                            :
+                        _ownMessage(document['messages'][messageCnt - index - 1]['content'], document['messages'][messageCnt - index - 1]['name']);
+
                       },
 //                      itemCount: 1,//snapshot.data.documents[0]['messages'][0].length
                         itemCount: snapshot.data.documents.isEmpty ? 0 : snapshot.data.documents.first['messages'].length,
@@ -151,12 +153,12 @@ class _ChatPageState extends State<ChatPage> {
     Widget _message(String message, String name) {
       return Row(
         children: <Widget>[
-          Icon(Icons.person,color: Colors.orangeAccent),
+          Icon(Icons.person),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 10.0),
-              Text(name , style: TextStyle(color: Colors.grey,fontSize: 10)),
+              Text(name , style: TextStyle(color: Colors.black)),
               Text(message, style: TextStyle(color: Colors.black),)
             ],
           ),
@@ -172,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               SizedBox(height: 10.0),
-              Text(name , style: TextStyle(color: Colors.grey,fontSize: 10)),
+              Text(name , style: TextStyle(color: Colors.black)),
               Text(message, style: TextStyle(color: Colors.black),)
             ],
           ),
