@@ -121,61 +121,16 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
   File _image;
 
   void userDelete() {
-    DocumentReference docR =
-        Firestore.instance.collection('Users').document(user.uid);
-
-    docR.setData({
-      'uid': user.uid,
-      'name': userNameController.text,
-      'email': userEmailController.text,
-      'nick': userNickController.text,
-      'psswd': userPsswdController.text,
-      'location': userLocationController.text,
-      'phone': userPhoneController.text,
+    Firestore.instance
+        .collection('Users')
+        .document(user.uid)
+        .delete()
+        .catchError((e) {
+      print(e);
     });
-
-    userNameController.clear();
-    userEmailController.clear();
-    userNickController.clear();
-    userPsswdController.clear();
-    userLocationController.clear();
-    userPhoneController.clear();
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (context) => new HomePage(
-                user: user, auth: auth, googleSignIn: googleSignIn)));
-  }
-
-  void uploadPic() async {
-    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = image;
-    });
-    //Create a reference to the location you want to upload to in firebase
-    StorageReference reference =
-        _storage.ref().child("/items/" + DateTime.now().toString() + ".jpg");
-
-    //Upload the file to firebase
-    StorageUploadTask uploadTask = reference.putFile(image);
-
-    // Waits till the file is uploaded then stores the download url
-//    var downUrl = (await uploadTask.onComplete).ref.getDownloadURL();
-    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-    final String url = (await downloadUrl.ref.getDownloadURL());
-//    return downUrl.toString();
-
-    imageUrl = url.toString();
-//    setState(() {
-//      _test = url.toString();
-//    });
-//    print("this" + url);
   }
 
   Widget build(BuildContext context) {
-
-    bool pwdmatch = false ;
-
     return Container(
         padding: EdgeInsets.all(16.0),
         margin: EdgeInsets.fromLTRB(16.0, 50, 16.0, 10),
@@ -196,13 +151,15 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                   children: <Widget>[
                     Container(
                         width: 60,
-                        margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
                         child:
                             Text("이름", style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(user.displayName, style: TextStyle(color: Colors.white)),
+                        child: Text(user.displayName,
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -212,14 +169,16 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                   children: <Widget>[
                     Container(
                         width: 60,
-                        margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
                         child:
                             Text("이메일", style: TextStyle(color: Colors.white))),
                     Flexible(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
-                        child: Text(user.email, style: TextStyle(color: Colors.white)),
-
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                        child: Text(user.email,
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -239,71 +198,33 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                           style: new TextStyle(color: Colors.white),
                           controller: userPsswdController,
                           obscureText: true,
-                          validator: (value) {
-                            Firestore.instance.collection('Users').document(user.uid).get().then((value){
-                              if(value.data[5] !=userPsswdController.text){
-                                print(value.data[5]) ;
-                                pwdmatch = false ;
-                                return 'Password not matching';
-                              } else {
-                                pwdmatch = true ;
-                              }
-
-                            });
-                          },
+                          validator: (value) {},
                         ),
                       ),
                     ),
                   ],
                 ),
-// 사진첨부기능
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.start,
-//
-//                  children: <Widget>[
-//                    Container(
-//                        width: 60,
-//                        margin: EdgeInsets.symmetric(horizontal: 8.0),
-//                        child: Text("사진첨부")
-//                    ),
-//                    IconButton(
-//                      icon: Icon(Icons.camera_alt,color: Colors.white),
-//                      onPressed: uploadPic,
-//                    )
-//                  ],
-//                ),
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Center(
-//                        child: _image == null
-//                            ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0),)
-//                            : Container(
-//                          height: 100,
-//                          width:  160,
-//                          decoration: BoxDecoration(
-//                              image: DecorationImage(
-//                                  image: FileImage(_image),
-//                                  fit: BoxFit.fitHeight
-//                              )
-//                          ),
-//                        )
-//                    ),
-////                  Image.file(_image)
-//                  ],
-//                ),
                 MaterialButton(
-
-                  child: Text('탈퇴', style: TextStyle(color: Colors.white)),
-                  color: Colors.orangeAccent,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onPressed: () {
-                    if (pwdmatch)
-                      userDelete();
-                  }
-
-                ),
+                    child: Text('탈퇴', style: TextStyle(color: Colors.white)),
+                    color: Colors.orangeAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    onPressed: () async {
+                      await Firestore.instance
+                          .collection('Users')
+                          .document(user.uid)
+                          .get()
+                          .then((value) {
+                        print("value.data: ${value.data.values.elementAt(5)}");
+                        if (value.data.values.elementAt(5) ==
+                            userPsswdController.text) userDelete();
+                      });
+                      await auth.signOut().then((value) {
+                        FirebaseAuth.instance.signOut();
+                        googleSignIn.signOut();
+                        Navigator.pushNamed(context, '/init');
+                      });
+                    }),
               ],
             ),
           ),
