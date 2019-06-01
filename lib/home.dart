@@ -5,9 +5,9 @@ import 'detail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'myPage.dart';
-import 'init.dart';
-import 'deleteuser.dart';
-
+import 'chart.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'dart:async';
 //
 
 class HomePage extends StatefulWidget {
@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     @required this.auth,
     @required this.googleSignIn,
   });
-
   final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
   DocumentReference docR = Firestore.instance.collection('Items').document();
   var _category = ['물건', '사람', '공간', '노하우'];
@@ -137,24 +136,20 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
+                title: Text("판매통계",style:TextStyle(color:Colors.white)),
+                onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder:(context)=>
+                ChartPage(user:user)));
+            //                  Navigator.pushNamed(context, '/myPage');
+
+                },
+              ),
+              ListTile(
                 title: Text("로그아웃",style:TextStyle(color:Colors.white)),
                 onTap: () {
                   _signOut();
                 },
-              ),
-              ListTile(
-                title: Text("탈퇴",style:TextStyle(color:Colors.white)),
-                onTap: () {
-                  //TODO: 탈퇴 기능
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new DeleteUserPage(
-                              user: user,
-                              auth: auth,
-                              googleSignIn: googleSignIn)));
-                },
-              ),
+              )
             ],
           ),
         ),
@@ -250,6 +245,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 }
 
 
@@ -476,6 +472,5 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 //    );
 
   }
-}
 
-// 배너부분 끝
+}
