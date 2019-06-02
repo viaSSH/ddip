@@ -127,6 +127,7 @@ class _ChatPageState extends State<ChatPage> {
                             initialData: "loading",
                             builder: (BuildContext context, AsyncSnapshot<String> text){
                               print(text.data);
+
                               return RaisedButton(
                                 child: Text("구매자 " + (index+1).toString() + " : " + text.data.toString() + "의 대화방으로 이동하기", style: TextStyle(color: Colors.black87)),
                                 onPressed: () {
