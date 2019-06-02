@@ -8,15 +8,16 @@ import 'myPage.dart';
 import 'chart.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:async';
+import 'deleteuser.dart';
 //
 
 class HomePage extends StatefulWidget {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
 
-  HomePage({Key key,
+  HomePage({
+    Key key,
     @required this.user,
     @required this.auth,
     @required this.googleSignIn,
@@ -34,7 +35,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final FirebaseUser user;
   final FirebaseAuth auth;
   final GoogleSignIn googleSignIn;
@@ -45,7 +45,8 @@ class _HomePageState extends State<HomePage> {
     @required this.auth,
     @required this.googleSignIn,
   });
-  final String default_url = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
+  final String default_url =
+      'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2';
   DocumentReference docR = Firestore.instance.collection('Items').document();
   var _category = ['물건', '사람', '공간', '노하우'];
   @override
@@ -59,121 +60,120 @@ class _HomePageState extends State<HomePage> {
             child: FlatButton(
               padding: EdgeInsets.all(4.0),
               child: Text("물건올리기", style: TextStyle(color: Colors.white)),
-              onPressed: (){
+              onPressed: () {
                 Navigator.pushNamed(context, '/addItem');
               },
             ),
           )
         ],
       ),
-      body:
-      Column(
-          children: [
-          Image.network(
-          'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo_navy_ddip.png?alt=media&token=70f1d77e-bf9e-4c33-b370-d31fb59c6ffb',
-          height: 200.0,width:300.0),
-      Padding(
+      body: Column(children: [
+        Image.network(
+            'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo_navy_ddip.png?alt=media&token=70f1d77e-bf9e-4c33-b370-d31fb59c6ffb',
+            height: 200.0,
+            width: 300.0),
+        Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children:[
-            for(var category in _category)
-            MaterialButton(
-              child: Text(category,style: TextStyle(color: Colors.white)),
-              color: Colors.orangeAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            for (var category in _category)
+              MaterialButton(
+                child: Text(category, style: TextStyle(color: Colors.white)),
+                color: Colors.orangeAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/search', arguments: category);
+                },
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/search',
-                    arguments: category
-                );
-              },
-            ),
-            ]
-            ),
+          ]),
         ),
-            Flexible(
-              child: StreamBuilder(
-                  stream:Firestore.instance.collection('Items').snapshots(),
-                  builder: (context, snapshot) {
-                    if(!snapshot.hasData) return const Text('Loading...');
-                    return Center(
-                      child: SizedBox(
-                          width:390.0,
-                          child:GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) =>
-                                _buildGridCards(context, snapshot.data.documents[index]),
-                          )
-                      ),
-                    );
-                  }
-              ),
-            ),
-          ]
-      ),
+        Flexible(
+          child: StreamBuilder(
+              stream: Firestore.instance.collection('Items').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const Text('Loading...');
+                return Center(
+                  child: SizedBox(
+                      width: 390.0,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) => _buildGridCards(
+                            context, snapshot.data.documents[index]),
+                      )),
+                );
+              }),
+        ),
+      ]),
       drawer: Drawer(
         child: Container(
           color: Colors.orangeAccent,
           child: ListView(
             children: <Widget>[
               DrawerHeader(
-                child: Text("${user.displayName} 회원님 반갑습네다",style:TextStyle(color:Colors.white)),
-                decoration: BoxDecoration(
-                  color: Colors.orange
-                ),
+                child: Text("${user.displayName} 회원님 반갑습네다",
+                    style: TextStyle(color: Colors.white)),
+                decoration: BoxDecoration(color: Colors.orange),
               ),
               ListTile(
-                title: Text("마이페이지",style:TextStyle(color:Colors.white)),
-
+                title: Text("마이페이지", style: TextStyle(color: Colors.white)),
                 onTap: () {
-                  Navigator.push(context,MaterialPageRoute(builder:(context)=>
-                      MyPage(user:user)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MyPage(user: user)));
 //                  Navigator.pushNamed(context, '/myPage');
-
                 },
               ),
               ListTile(
-                title: Text("판매통계",style:TextStyle(color:Colors.white)),
+                title: Text("판매통계", style: TextStyle(color: Colors.white)),
                 onTap: () {
-                Navigator.push(context,MaterialPageRoute(builder:(context)=>
-                ChartPage(user:user)));
-            //                  Navigator.pushNamed(context, '/myPage');
-
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChartPage(user: user)));
+                  //                  Navigator.pushNamed(context, '/myPage');
                 },
               ),
               ListTile(
-                title: Text("로그아웃",style:TextStyle(color:Colors.white)),
+                title: Text("로그아웃", style: TextStyle(color: Colors.white)),
                 onTap: () {
                   _signOut();
                 },
-              )
+              ),
+              ListTile(
+                title: Text("탈퇴", style: TextStyle(color: Colors.white)),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new DeleteUserPage(
+                              user: user,
+                              auth: auth,
+                              googleSignIn: googleSignIn)));
+                },
+              ),
             ],
           ),
         ),
       ),
-
       backgroundColor: Color.fromARGB(255, 25, 14, 78),
     );
-
   }
 
   void _signOut() async {
-    await auth.signOut().then((value){
+    await auth.signOut().then((value) {
       FirebaseAuth.instance.signOut();
       googleSignIn.signOut();
-//      final String uid = user.uid;
-//      print(uid + ' has successfully signed out.');
-//      print(user.displayName);
       Navigator.pushNamed(context, '/init');
     });
   }
 
   Widget _buildGridCards(BuildContext context, DocumentSnapshot document) {
     return Card(
-      color:Color.fromARGB(255, 25, 14, 78),
+      color: Color.fromARGB(255, 25, 14, 78),
       // TODO: Adjust card heights (103)
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -181,12 +181,16 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(0,20,0,5),
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 5),
             child: Center(
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
 //            print(data.documentID);
-                  Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DetailPage(document: document, user: user)));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
@@ -194,9 +198,9 @@ class _HomePageState extends State<HomePage> {
                     width: 180,
                     height: 110,
                     decoration: BoxDecoration(
-                      image: DecorationImage(image: NetworkImage( document['imageUrl'][0]),
-                          fit: BoxFit.fill
-                      ),
+                      image: DecorationImage(
+                          image: NetworkImage(document['imageUrl'][0]),
+                          fit: BoxFit.fill),
                     ),
                   ),
                 ),
@@ -216,38 +220,27 @@ class _HomePageState extends State<HomePage> {
                 // TODO: Handle overflowing labels (103)
                 // TODO(larche): Make headline6 when available
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0,10.0,3.0,0),
-                  child: Text(
-                    "물품명: "+
-                      document['name'],
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 3.0, 0),
+                  child: Text("물품명: " + document['name'],
                       maxLines: 1,
-                      style:TextStyle(fontSize: 14.0, color: Colors.white)
-                  ),
+                      style: TextStyle(fontSize: 14.0, color: Colors.white)),
                 ),
                 SizedBox(height: 2.0),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0,0,3.0,0),
-                  child: Row(
-                      children:[
-                        Text("가격: "+
-                            document['price'].toString() + "원",
-                            style:TextStyle(fontSize: 14.0, color: Colors.white)
-                        ),
-                      ]
-                  ),
+                  padding: const EdgeInsets.fromLTRB(10.0, 0, 3.0, 0),
+                  child: Row(children: [
+                    Text("가격: " + document['price'].toString() + "원",
+                        style: TextStyle(fontSize: 14.0, color: Colors.white)),
+                  ]),
                 ),
               ],
             ),
           ),
-
-
         ],
       ),
     );
   }
-
 }
-
 
 // 카테고리 인기리스트 시작
 class _TopCategorySection extends StatefulWidget {
@@ -255,26 +248,27 @@ class _TopCategorySection extends StatefulWidget {
   State<StatefulWidget> createState() => _TopCategorySectionState();
 }
 
-Stream<QuerySnapshot> stream1 = Firestore.instance.collection('Items').where('category', isEqualTo: 'goods').snapshots();
-Stream<QuerySnapshot> stream2 = Firestore.instance.collection('Items').where('category', isEqualTo: 'goods').snapshots();
+Stream<QuerySnapshot> stream1 = Firestore.instance
+    .collection('Items')
+    .where('category', isEqualTo: 'goods')
+    .snapshots();
+Stream<QuerySnapshot> stream2 = Firestore.instance
+    .collection('Items')
+    .where('category', isEqualTo: 'goods')
+    .snapshots();
 var mygroup = StreamZip([stream1, stream2]);
 
 //var mygroup = StreamGroup();
 
 class _TopCategorySectionState extends State<_TopCategorySection> {
-
   var itemCate = ['goods', 'manpower', 'place', 'knowhow'];
 
-
   StreamZip bothStreams = StreamZip([stream1, stream2]);
-
 
 //  mygroup.add(stream1);
 //  test.add(stream2);
 
-
 //    var mygroup = StreamGroup.merge([stream1, stream2]);
-
 
 //  StreamGroup streamGroup = StreamGroup([stream1, stream2]);
 //  Firestore.instance.collection('Items').snapshots();
@@ -282,8 +276,6 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
   Widget build(BuildContext context) {
     final double cardWidth = 100.0;
     final double cardHeight = 100.0;
-
-
 
 //    bothStreams.listen((snaps) {
 //      DocumentSnapshot snapshot1 = snaps[0];
@@ -326,9 +318,7 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 //        },
 //      );
 
-  return Text("어케짜야될지모르겟다 ㅜㅜ");
-
-
+    return Text("어케짜야될지모르겟다 ㅜㅜ");
 
 //    return StreamBuilder<List<QuerySnapshot>>(
 //      stream: Firestore.instance.collection('Items').snapshots(),
@@ -470,7 +460,5 @@ class _TopCategorySectionState extends State<_TopCategorySection> {
 //        ],
 //      ),
 //    );
-
   }
-
 }

@@ -18,38 +18,29 @@ final String defUrl = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.ap
 List<dynamic> stime = [];
 List<dynamic> etime = [];
 
-class RegisterPage extends StatefulWidget {
+class UpdateUserPage extends StatefulWidget {
   final FirebaseUser user;
-  final FirebaseAuth auth;
-  final GoogleSignIn googleSignIn;
 
-  RegisterPage({
+  UpdateUserPage({
     Key key,
     @required this.user,
-    @required this.auth,
-    @required this.googleSignIn,
   });
 
   @override
-  _RegisterPageState createState() {
-    return _RegisterPageState(
+  _UpdateUserPageState createState() {
+    return _UpdateUserPageState(
       user: user,
-      auth: auth,
-      googleSignIn: googleSignIn,
     );
   }
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _UpdateUserPageState extends State<UpdateUserPage> {
   final FirebaseUser user;
-  final FirebaseAuth auth;
-  final GoogleSignIn googleSignIn;
 
-  _RegisterPageState({
+
+  _UpdateUserPageState({
     Key key,
     @required this.user,
-    @required this.auth,
-    @required this.googleSignIn,
   });
 
   @override
@@ -80,10 +71,8 @@ class _RegisterPageState extends State<RegisterPage> {
             Center(
                 child: Text("회원가입",
                     style: TextStyle(color: Colors.white, fontSize: 30))),
-            _RegisterFormSection(
+            _UpdateFormSection(
               user: user,
-              auth: auth,
-              googleSignIn: googleSignIn,
             )
           ],
         ),
@@ -93,38 +82,30 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 }
 
-class _RegisterFormSection extends StatefulWidget {
+class _UpdateFormSection extends StatefulWidget {
   final FirebaseUser user;
-  final FirebaseAuth auth;
-  final GoogleSignIn googleSignIn;
 
-  _RegisterFormSection({
+  _UpdateFormSection({
     Key key,
     @required this.user,
-    @required this.auth,
-    @required this.googleSignIn,
+
   });
 
   @override
-  _RegisterFormSectionState createState() {
-    return _RegisterFormSectionState(
+  _UpdateFormSectionState createState() {
+    return _UpdateFormSectionState(
       user: user,
-      auth: auth,
-      googleSignIn: googleSignIn,
     );
   }
 }
 
-class _RegisterFormSectionState extends State<_RegisterFormSection> {
+class _UpdateFormSectionState extends State<_UpdateFormSection> {
   final FirebaseUser user;
-  final FirebaseAuth auth;
-  final GoogleSignIn googleSignIn;
 
-  _RegisterFormSectionState({
+
+  _UpdateFormSectionState({
     Key key,
     @required this.user,
-    @required this.auth,
-    @required this.googleSignIn,
   });
 
   FirebaseStorage _storage = FirebaseStorage.instance;
@@ -135,11 +116,12 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 
   File _image;
 
-  void userRegister() {
+  void userUpdate() async {
     DocumentReference docR =
-        Firestore.instance.collection('Users').document(user.uid);
+    Firestore.instance.collection('Users').document(user.uid);
 
-    docR.setData({
+    await docR.get().then((value){
+      docR.setData({
       'uid': user.uid,
       'name': userNameController.text,
       'email': userEmailController.text,
@@ -147,7 +129,9 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
       'psswd': userPsswdController.text,
       'location': userLocationController.text,
       'phone': userPhoneController.text,
+      });
     });
+
 
     userNameController.clear();
     userEmailController.clear();
@@ -155,11 +139,12 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
     userPsswdController.clear();
     userLocationController.clear();
     userPhoneController.clear();
+
     Navigator.push(
         context,
         new MaterialPageRoute(
             builder: (context) => new HomePage(
-                user: user, auth: auth, googleSignIn: googleSignIn)));
+                user: user,)));
   }
 
   void uploadPic() async {
@@ -169,7 +154,7 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
     });
     //Create a reference to the location you want to upload to in firebase
     StorageReference reference =
-        _storage.ref().child("/items/" + DateTime.now().toString() + ".jpg");
+    _storage.ref().child("/items/" + DateTime.now().toString() + ".jpg");
 
     //Upload the file to firebase
     StorageUploadTask uploadTask = reference.putFile(image);
@@ -187,7 +172,20 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
 //    print("this" + url);
   }
 
+
   Widget build(BuildContext context) {
+
+    DocumentReference docR =
+    Firestore.instance.collection('Users').document(user.uid);
+
+    docR.get().then((value){
+      userNameController.text = value.data.values.elementAt(3);
+      userEmailController.text = value.data.values.elementAt(6);
+      userNickController.text = value.data.values.elementAt(0);
+      userLocationController.text = value.data.values.elementAt(4);
+      userPhoneController.text = value.data.values.elementAt(2);
+    });
+
     return Container(
 //        padding: EdgeInsets.all(16.0),
         margin: EdgeInsets.fromLTRB(30.0, 40, 30.0, 10),
@@ -450,13 +448,13 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(220,8,0,8),
                   child: MaterialButton(
-                    child: Text('가입하기', style: TextStyle(color: Colors.white)),
+                    child: Text('수정완료', style: TextStyle(color: Colors.white)),
                     color: Color.fromARGB(255, 25, 14, 78),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     onPressed: (){
                       if(pwdmatch){
-                        userRegister();
+                        userUpdate();
                       }
                     },
                   ),

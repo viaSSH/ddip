@@ -9,6 +9,7 @@ import 'myPage.dart';
 import'newSearch.dart';
 import 'map.dart';
 import 'chat.dart';
+import 'edit.dart';
 
 void main() => runApp(MyApp());
 
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/myPage': (context) => MyPage(),
         '/map': (context) => MapPage(),
         '/chat': (context) => ChatPage(),
+        '/edit': (context) => EditItemPage(),
 
       },
     );
