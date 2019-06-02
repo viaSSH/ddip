@@ -113,6 +113,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
       'seller': user.uid,
       'description': itemContentController.text,
 //      'imageUrl': imageUrl,
+      'available':true,
       'imageUrl': imageUrls,
       'stime' : _stime,
       'etime' : _etime,
