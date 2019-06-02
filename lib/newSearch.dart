@@ -3,18 +3,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 
+
 import 'detail.dart';
 class SearchPage extends StatefulWidget {
   final FirebaseUser user;
-  SearchPage ({Key key, @required this.user});
+  String category;
+
+  SearchPage ({Key key, @required this.user, @required this.category});
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _SearchPageState createState() => _SearchPageState(user:user, category: category);
 
 }
 
 class _SearchPageState extends State<SearchPage> {
   final FirebaseUser user;
-  _SearchPageState({Key key, @required this.user});
+  String category;
+  _SearchPageState({Key key, @required this.user, @required this.category});
   final TextEditingController _searchQuery = TextEditingController();
 
 //  var _subCategory = ['공구', '옷', '가구'];
@@ -26,8 +30,8 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    final String _thisCategory = ModalRoute.of(context).settings.arguments;
+    final String _thisCategory = category;
+//    final String _thisCategory = ModalRoute.of(context).settings.arguments;
     _selectedCategory = _thisCategory;
 //    _selectedSubCategory = _subCategory[_selectedCategory][0];
     if(_selectedSubCategory == null) _selectedSubCategory = _subCategory[_selectedCategory][0];
@@ -73,15 +77,6 @@ class _SearchPageState extends State<SearchPage> {
 
                           print(_selectedSubCategory);
                       },
-                    ),
-                    RaisedButton(
-                      child: Text("대여날짜",style:TextStyle(color: Colors.white)),
-                      padding: EdgeInsets.all(4.0),
-                      color: Colors.orangeAccent,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      onPressed: (){},
                     ),
                   ]
               ),
@@ -173,6 +168,7 @@ class _SearchPageState extends State<SearchPage> {
 //                  fit: BoxFit.fill,
                 fit: BoxFit.cover,
                 child: InkWell( onTap: (){
+                  print(user.uid);
                   Navigator.push(context,MaterialPageRoute(builder:(context)=>DetailPage(document:document,user:user)));
                 },
                 ),

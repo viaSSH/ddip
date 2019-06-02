@@ -204,27 +204,30 @@ class _RegisterFormSectionState extends State<_RegisterFormSection> {
                     ),
                   ],
                 ),
-                MaterialButton(
-                    child: Text('탈퇴', style: TextStyle(color: Colors.white)),
-                    color: Colors.orangeAccent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () async {
-                      await Firestore.instance
-                          .collection('Users')
-                          .document(user.uid)
-                          .get()
-                          .then((value) {
-                        print("value.data: ${value.data.values}");
-                        if (value.data.values.elementAt(5) ==
-                            userPsswdController.text) userDelete();
-                      });
-                      await auth.signOut().then((value) {
-                        FirebaseAuth.instance.signOut();
-                        googleSignIn.signOut();
-                        Navigator.pushNamed(context, '/init');
-                      });
-                    }),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(200,8.0, 8.0, 8.0),
+                  child: MaterialButton(
+                      child: Text('탈퇴', style: TextStyle(color: Colors.white)),
+                      color: Colors.orangeAccent,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      onPressed: () async {
+                        await Firestore.instance
+                            .collection('Users')
+                            .document(user.uid)
+                            .get()
+                            .then((value) {
+                          print("value.data: ${value.data.values}");
+                          if (value.data.values.elementAt(5) ==
+                              userPsswdController.text) userDelete();
+                        });
+                        await auth.signOut().then((value) {
+                          FirebaseAuth.instance.signOut();
+                          googleSignIn.signOut();
+                          Navigator.pushNamed(context, '/init');
+                        });
+                      }),
+                ),
               ],
             ),
           ),

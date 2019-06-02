@@ -64,21 +64,20 @@ class ChartPage extends StatefulWidget {
       spacelen = totalEquals3+0.0;
       print(spacelen);
 
+      spacelen == totalEquals3+0.0 ?
+          getOnce= true:
+          getOnce= false;
 
       dataMap.putIfAbsent("물건", () => goodslen);
       dataMap.putIfAbsent("사람", () => personlen);
       dataMap.putIfAbsent("공간", () => spacelen);
       dataMap.putIfAbsent("노하우", () => knowhowlen);
-
-
     }
 
     @override
     Widget build(BuildContext context) {
       totalItem();
       if(!getOnce)totalItem();
-
-
 //Simple Usage
 //    PieChart(dataMap: dataMap);
 //    if(getOnce)
@@ -89,9 +88,6 @@ class ChartPage extends StatefulWidget {
     title: Text("판매통계"),
     ),
     body: //Full Configuration
-
-    Column(
-      children:<Widget> [
     PieChart(
     dataMap: dataMap, //Required parameter
     legendFontColor: Colors.blueGrey[900],
@@ -108,8 +104,6 @@ class ChartPage extends StatefulWidget {
     chartValuesColor: Colors.blueGrey[900].withOpacity(0.9),
 //        colorList: colorList,
     showLegends: true,
-    ),
-      ]
     )
     );
     }

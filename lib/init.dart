@@ -62,21 +62,21 @@ class _InitPageState extends State<InitPage> {
               ),
             ),
             SizedBox(height:10),
-            Center(
-              child: Container(
-                  child: MaterialButton(
-                    minWidth: 200,
-                    height: 40,
-                    child: Text('익명 로그인',
-                        style: TextStyle(color: Colors.white)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      side: BorderSide(color: Colors.white, width: 1.0),
-                    ),
-                    onPressed: () => _signInAnonymously(),
-                  )
-              ),
-            ),
+//            Center(
+//              child: Container(
+//                  child: MaterialButton(
+//                    minWidth: 200,
+//                    height: 40,
+//                    child: Text('익명 로그인',
+//                        style: TextStyle(color: Colors.white)),
+//                    shape: RoundedRectangleBorder(
+//                      borderRadius: BorderRadius.circular(5),
+//                      side: BorderSide(color: Colors.white, width: 1.0),
+//                    ),
+//                    onPressed: () => _signInAnonymously(),
+//                  )
+//              ),
+//            ),
           ]
       ),
       backgroundColor: Colors.orangeAccent,

@@ -43,6 +43,7 @@ class _DetailPageState extends State<DetailPage> {
   void uploadTransaction() async {
     DocumentReference docTransR = Firestore.instance.collection('Transactions').document();
     DocumentReference docItemsR = Firestore.instance.collection('Items').document(document.documentID);
+    DocumentReference docUserR = Firestore.instance.collection('Users').document();
 
     final FirebaseUser user = await _auth.currentUser();
 //    print(document.documentID);
@@ -346,7 +347,7 @@ class _DetailPageState extends State<DetailPage> {
             borderRadius: BorderRadius.circular(10)
             ),
             child: Text("정보수정",style: TextStyle(color: Colors.white, fontSize: 15)),
-            minWidth: 100,
+            minWidth: 180,
             height: 40,
             onPressed: (){
               Navigator.pushNamed(context, '/edit',
@@ -355,10 +356,9 @@ class _DetailPageState extends State<DetailPage> {
             },
             )
           :
-
           MaterialButton(
           color: Colors.orangeAccent,
-          minWidth: 250,
+          minWidth: 180,
           height: 40,
           shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10)
@@ -409,13 +409,12 @@ class _DetailPageState extends State<DetailPage> {
 
         SizedBox(width:10),
         MaterialButton(
-
         color: Colors.orange[200],
         shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10)
         ),
         child: Text("대화하기",style: TextStyle(color: Colors.white, fontSize: 15)),
-        minWidth: 100,
+        minWidth: 180,
         height: 40,
         onPressed: (){
           Navigator.pushNamed(context, '/chat', arguments: {'seller': document['seller'], 'buyer': user.uid, 'uid': document.documentID});        },
@@ -426,7 +425,11 @@ class _DetailPageState extends State<DetailPage> {
 
 //      document['reply'] != null ? {Text("yes")} : Text("no"),
 
-      if(document['reply'] == null) Text("댓글이 없습니다",style: TextStyle(color: Colors.white))
+      if(document['reply'] == null)
+        Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Text("댓글이 없습니다",style: TextStyle(color: Colors.white))
+      )
       else
         for (var reply in document['reply'])
           Padding(
@@ -576,12 +579,25 @@ class _DetailPageState extends State<DetailPage> {
                         SizedBox(width:10.0),
                         Column(
                             children:[
-                              Text('${formatter.format(_date)}'),
-                              Text('${formatter.format(_date2)}')
+                              Text('${formatter.format(_date)}',style :TextStyle(color:Colors.red)),
+                              Text('${formatter.format(_date2)}',style :TextStyle(color:Colors.red))
                             ]
                         )
                       ]
                   ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children:[
+                        Column(
+                            children:[
+                              SizedBox(height:10),
+                              Text("판매자와 연락을 통해 예약을 한번 더 확인 하시길 바랍니다",style:TextStyle(fontSize: 9.0, color:Colors.red)),
+                            ]
+                        ),
+                      ]
+                  ),
+
                   SizedBox(height:10.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

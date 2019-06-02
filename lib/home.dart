@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'myPage.dart';
 import 'chart.dart';
+import 'newSearch.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:async';
 import 'deleteuser.dart';
@@ -83,7 +84,14 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/search', arguments: category);
+//                  Navigator.pushNamed(context, '/search', arguments: category);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SearchPage(user: user, category: category)),
+//                    arguments: category
+                  );
                 },
               ),
           ]),
@@ -144,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                title: Text("탈퇴", style: TextStyle(color: Colors.white)),
+                title: Text("회원탈퇴", style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.push(
                       context,

@@ -140,14 +140,38 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: Row(children: [
-                    Image.network(imageUrl, width: 100.0, height: 100.0),
-                    SizedBox(width: 30),
-                    Text(myName,
+                Row(
+                    children: [
+                  Image.network(imageUrl, width: 100.0, height: 100.0),
+                  SizedBox(width: 30),
+                  Column(
+                    children:[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0,20,10,0),
+                    child: Text(myName,
                         style: TextStyle(fontSize: 20.0, color: Colors.white)),
-                  ]),
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(80,8,0,0),
+                    child: MaterialButton(
+                        minWidth: 10,
+                        height: 30,
+                        child: Text('정보수정', style: TextStyle(color: Colors.white, fontSize: 11)),
+                        color: Color.fromARGB(50, 255, 255, 255),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                  builder: (context) => new UpdateUserPage(
+                                      user: user)));
+                        }),
+                  ),
+                ]
+                  )
+                ]),
+
                 SizedBox(height: 30),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -243,19 +267,6 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
                     );
                   }).toList(),
                 ),
-                SizedBox(height: 30),
-                MaterialButton(
-                    child: Text('정보수정', style: TextStyle(color: Colors.white)),
-                    color: Colors.orangeAccent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                              builder: (context) => new UpdateUserPage(
-                                  user: user)));
-                    }),
               ]),
         ),
       ),

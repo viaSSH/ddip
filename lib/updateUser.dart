@@ -69,7 +69,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
 
             SizedBox(height:10),
             Center(
-                child: Text("회원가입",
+                child: Text("회원정보 수정",
                     style: TextStyle(color: Colors.white, fontSize: 30))),
             _UpdateFormSection(
               user: user,
