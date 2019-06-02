@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+import 'dart:async';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final replyController =  TextEditingController();
@@ -158,26 +159,59 @@ class _ChatPageState extends State<ChatPage> {
 //                      .where('buyer', isEqualTo: buyer).snapshots(),
                       .where('buyer', isEqualTo: buyer)
                       .where('itemUid', isEqualTo: args['uid']).snapshots(),
-                  builder: (context, snapshot) {
+                  builder: (context, AsyncSnapshot snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none: print("start"); return Text("start");
+                      case ConnectionState.waiting: print("waiting"); return Text("wating");
+                      default:
+                        if (snapshot.hasError)
+                          print("error!");
+                        else{
+//                          snapshot.data.documents.length
+//                          if(seller != buyer && (snapshot.hasData ) ){ //&&
+                          if(seller != buyer && snapshot.data.documents.length==0 ){
+                                  chatUid = 'chat_' + args['uid'];
+
+                                  print("no data! " + chatUid);
+
+                                  var db = Firestore.instance;
+                                  db.collection("ChatRoom").document(chatUid).setData({
+                                    'itemUid': args['uid'],
+                                    'buyer': buyer,
+                                    'seller': seller,
+                                    'messages': []
+                                  });
+
+      //                      return Container(child: Text("nothing"),);
+                                }
+                        }
+                    }
+
                     print("display buyer: " + buyer);
                     print("display seller: " + seller);
-//                  print(snapshot.requireData.documents[0]['messages']);
-//                    if(seller != buyer && (!snapshot.hasData || !snapshot.data?.documents.isNotEmpty) ){ //&&
-                    if(seller != buyer && (!snapshot.hasData ) ){ //&&
-                      chatUid = 'chat_' + args['uid'];
+////                  print(snapshot.requireData.documents[0]['messages']);
+////                    if(seller != buyer && (!snapshot.hasData || !snapshot.data?.documents.isNotEmpty) ){ //&&
+////                    print(snapshot.hasData.toString());
+////                    if(seller != buyer && (snapshot.hasData) ){
+//                    print(snapshot.data);
+//                    print(snapshot.hasData);
 
-                      print("no data! " + chatUid);
-
-                      var db = Firestore.instance;
-                      db.collection("ChatRoom").document(chatUid).setData({
-                        'itemUid': args['uid'],
-                        'buyer': buyer,
-                        'seller': seller,
-                        'messages': []
-                      });
-
-//                      return Container(child: Text("nothing"),);
-                    }
+//                    if(seller != buyer && !(snapshot.hasData ) ){ //&&
+////                    if(seller != buyer && (snapshot.hasData.toString() == 'false') ){
+//                      chatUid = 'chat_' + args['uid'];
+//
+//                      print("no data! " + chatUid);
+//
+//                      var db = Firestore.instance;
+//                      db.collection("ChatRoom").document(chatUid).setData({
+//                        'itemUid': args['uid'],
+//                        'buyer': buyer,
+//                        'seller': seller,
+//                        'messages': []
+//                      });
+//
+////                      return Container(child: Text("nothing"),);
+//                    }
 
 
 //                    DocumentSnapshot document = snapshot.data.documents;
