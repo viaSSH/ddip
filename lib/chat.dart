@@ -128,19 +128,29 @@ class _ChatPageState extends State<ChatPage> {
                             builder: (BuildContext context, AsyncSnapshot<String> text){
                               print(text.data);
 
-                              return RaisedButton(
-                                child: Text("구매자 " + (index+1).toString() + " : " + text.data.toString() + "의 대화방으로 이동하기", style: TextStyle(color: Colors.black87)),
-                                onPressed: () {
-                                  print("press" + index.toString());
-                                  print(snapshot.data.documents[index]['seller']);
-                                  print(snapshot.data.documents[index]['buyer']);
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(20,20,20,10),
+                                child: MaterialButton(
+                                  minWidth:50,
+                                  height: 50,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+//                                    side: BorderSide(color: Colors.orangeAccent, width: 2.0),
+                                  ),
+                                  color: Colors.orangeAccent,
+                                  child: Text("구매자 " + (index+1).toString() + " : " + text.data.toString() + "의 대화방으로 이동하기", style: TextStyle(color: Colors.white)),
+                                  onPressed: () {
+                                    print("press" + index.toString());
+                                    print(snapshot.data.documents[index]['seller']);
+                                    print(snapshot.data.documents[index]['buyer']);
 
-                                  setState(() {
-                                    buyer = snapshot.data.documents[index]['buyer'];
-                                  });
+                                    setState(() {
+                                      buyer = snapshot.data.documents[index]['buyer'];
+                                    });
 
 
-                                },
+                                  },
+                                ),
                               );
                             },
                           );
@@ -266,7 +276,7 @@ class _ChatPageState extends State<ChatPage> {
                       child: new IconButton(
                           icon: new Icon(
                             Icons.send,
-                            color: Colors.blue,
+                            color:  Color.fromARGB(255, 25, 14, 78),
                           ),
                           onPressed: () {
                             _handleSubmit(_sendMsgController.text);

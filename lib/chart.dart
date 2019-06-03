@@ -178,8 +178,8 @@ class ChartPage extends StatefulWidget {
       final data = [
         new OrdinalSales('물건', mytotalEquals, Colors.blue[300]),
         new OrdinalSales('사람', mytotalEquals1, Colors. greenAccent),
-        new OrdinalSales('공간', mytotalEquals3,Colors. green),
-        new OrdinalSales('노하우', mytotalEquals2,Colors. blue),
+        new OrdinalSales('공간', mytotalEquals3,Colors. yellow[200]),
+        new OrdinalSales('노하우', mytotalEquals2,Colors. red[300]),
       ];
 
       return [

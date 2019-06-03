@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'detail.dart';
 import 'updateUser.dart';
-
+import 'dart:async';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 String defimg =
@@ -201,6 +201,8 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
                         if (!_data[2].isExpanded)
                           _data[2].isExpanded = !_data[2].isExpanded;
                       }
+                      else
+                        _data[index].isExpanded = !isExpanded;
                     });
                   },
                   children: _data.map<ExpansionPanel>((Item item) {
@@ -217,11 +219,12 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
                         child: ListTile(
 //                          title: Text(item.expandedValue),
                           subtitle: StreamBuilder<QuerySnapshot>(
-                              stream: item.expandedValue == 0
-                                  ? Firestore.instance
-                                      .collection('Transactions')
-                                      .where('buyer', isEqualTo: userUID)
-                                      .snapshots()
+                              stream:
+                                  item.expandedValue == 0
+                                    ? Firestore.instance
+                                    .collection('Items')
+                                    .where('buyer', arrayContains: userUID)
+                                    .snapshots()
                                   : item.expandedValue == 1
                                       ? Firestore.instance
                                           .collection('Items')
@@ -273,8 +276,7 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
     );
   }
 
-  Widget _buildListItem(
-      BuildContext context, DocumentSnapshot document, int index) {
+   Widget _buildListItem(BuildContext context, DocumentSnapshot document, int index) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,13 +289,12 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
               child: ConstrainedBox(
                 constraints: BoxConstraints.expand(),
                 child: Ink.image(
-                  image: index == 0
-                      ? NetworkImage(document['imageUrl'])
-                      : NetworkImage(document['imageUrl'][0]),
-                  //                  fit: BoxFit.fill,
+                  image: NetworkImage(document['imageUrl'][0]),
                   fit: BoxFit.cover,
                   child: InkWell(
                     onTap: () {
+                      print( document['rendtStart']);
+                      print(document);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -327,11 +328,12 @@ class Item {
 
 List<Item> generateItems(int numberOfItems) {
   return List.generate(numberOfItems, (int index) {
-    return index == 0
-        ? Item(
-            headerValue: '대여중인 상품',
-            expandedValue: 0,
-          )
+    return
+      index == 0?
+        Item(
+          headerValue: '대여중인 상품',
+          expandedValue: 0,
+        )
         : index == 1
             ? Item(
                 headerValue: '내 상품',

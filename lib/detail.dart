@@ -461,7 +461,6 @@ class _DetailPageState extends State<DetailPage> {
       padding: EdgeInsets.all(8.0),
       child: Column(
       children: <Widget>[
-        Text("댓글쓰기",style: TextStyle(color: Colors.white)),
         Row(
           children: <Widget>[
             Flexible(

@@ -126,7 +126,11 @@ class _SearchPageState extends State<SearchPage> {
               stream: Firestore.instance.collection('Items').where('category', isEqualTo: _selectedCategory).where('subCategory', isEqualTo: _selectedSubCategory).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) return LinearProgressIndicator();
-                if(snapshot.data.documents.length == 0) return Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white));
+                if(snapshot.data.documents.length == 0)
+                  return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("찾으시는 검색결과가 없넹~",style:TextStyle(color:Colors.white)),
+                );
                 return Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Column(
@@ -136,7 +140,7 @@ class _SearchPageState extends State<SearchPage> {
                       GridView.count(
                         crossAxisCount: 2,
                         shrinkWrap: true,
-                        childAspectRatio: 2/3,
+                        childAspectRatio: 10/11,
                         physics: ScrollPhysics(), // 스크롤 가능하게 해줌
                         children: snapshot.data.documents.map((data) => _buildListItem(context, data)).toList(),
                       )
@@ -205,31 +209,6 @@ class _SearchPageState extends State<SearchPage> {
 
       ],
     );
-//    return Padding(
-//      padding: const EdgeInsets.all(5.0),
-//      child: Column(
-//        children: <Widget>[
-//          Card(
-//            child: InkWell(
-//              splashColor: Colors.blue.withAlpha(30),
-////          onTap: () {
-////            Navigator.pushNamed(context, '/detail',
-////                arguments: index
-////            );
-////          },
-//              child: Container(
-//                decoration: BoxDecoration(
-//                  borderRadius: new BorderRadius.circular(10.0),
-//                ),
-//                width: 180,
-//                height: 100,
-//                child: Text("card"),
-//              ),
-//            ),
-//          ),
-//        ],
-//      ),
-//    );
   }
 
 }
