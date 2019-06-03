@@ -64,8 +64,13 @@ class _DetailPageState extends State<DetailPage> {
     }
     );
 
+    var buyers = List<dynamic>.from(document['buyer']);
+    buyers.add(user.uid);
+
     docItemsR.updateData({
-     'available': false
+      'available': false,
+      'buyer': buyers
+
     }
     );
 
