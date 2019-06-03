@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("main page"),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: Color.fromARGB(255, 25, 14, 78),
         actions: <Widget>[
           Container(
             margin: EdgeInsets.all(8.0),
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      backgroundColor: Colors.orangeAccent,
+      backgroundColor: Color.fromARGB(255, 25, 14, 78),
     );
   }
 }
@@ -89,8 +89,8 @@ class _BannerSectionState extends State<_BannerSection> {
 
   Widget build(BuildContext context) {
     return Image.network(
-        'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/logo.png?alt=media&token=887a586e-5cba-4807-8339-c4dc130142d2'
-        ,height: 100.0,width:100.0);
+        'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.appspot.com/o/ddip_logo_navy.png?alt=media&token=418b7f31-8905-469b-9cbd-c520f86bd038',
+        height: 150.0,width:150.0);
   }
 }
 
