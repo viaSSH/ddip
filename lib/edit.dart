@@ -541,28 +541,11 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8,8,0,8),
-                      child: MaterialButton(
-                        child: Text('삭제',style: TextStyle(color: Colors.white)),
-                        color: Colors.redAccent,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        ),
-                        onPressed: () {
-                          deleteItem(data.documentID);
-                          getOnce = true;
-                          Navigator.pop(context);
-//                          Navigator.popUntil(context, ModalRoute.withName('/home'));
-//                          Navigator.of(context).popUntil(ModalRoute.withName('/home'));
 
-                        },
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8,8,0,8),
                       child: MaterialButton(
-                        child: Text('대여등록',style: TextStyle(color: Colors.white)),
+                        child: Text('수정완료',style: TextStyle(color: Colors.white)),
                         color: Colors.orangeAccent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)
@@ -590,7 +573,24 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                       ),
                     ),
 
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,8,0,8),
+                      child: MaterialButton(
+                        child: Text('삭제',style: TextStyle(color: Colors.white)),
+                        color: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        onPressed: () {
+                          deleteItem(data.documentID);
+                          getOnce = true;
+                          Navigator.pop(context);
+//                          Navigator.popUntil(context, ModalRoute.withName('/home'));
+//                          Navigator.of(context).popUntil(ModalRoute.withName('/home'));
 
+                        },
+                      ),
+                    ),
                   ],
                 )
 
