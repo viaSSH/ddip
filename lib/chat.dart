@@ -181,7 +181,8 @@ class _ChatPageState extends State<ChatPage> {
 //                          snapshot.data.documents.length
 //                          if(seller != buyer && (snapshot.hasData ) ){ //&&
                           if(seller != buyer && snapshot.data.documents.length==0 ){
-                                  chatUid = 'chat_' + args['uid'];
+//                                  chatUid = 'chat_' + args['uid'];
+                                  chatUid = 'chat_' + DateTime.now().millisecondsSinceEpoch.toString();
 
                                   print("no data! " + chatUid);
 
