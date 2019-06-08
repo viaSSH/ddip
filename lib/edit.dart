@@ -28,14 +28,14 @@ final String defUrl = 'https://firebasestorage.googleapis.com/v0/b/ddip-d0dc1.ap
 
 
 var formatDate = DateFormat('yyyy.MM.dd');
-class AddItemPage extends StatefulWidget {
+class EditItemPage extends StatefulWidget {
 
   @override
-  _AddItemPageState createState() => _AddItemPageState();
+  _EditItemPageState createState() => _EditItemPageState();
 
 }
 
-class _AddItemPageState extends State<AddItemPage> {
+class _EditItemPageState extends State<EditItemPage> {
 
   Completer<GoogleMapController> _controller = Completer();
   static const LatLng _center = const LatLng(36.103079, 129.3880255);
@@ -47,15 +47,18 @@ class _AddItemPageState extends State<AddItemPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-//        title: Text("asd"),
-        backgroundColor: Color.fromARGB(255, 25, 14, 78),
-      ),
+//      appBar: AppBar(
+////        title: Text("asd"),
+//        backgroundColor: Color.fromARGB(255, 25, 14, 78),
+//        leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
+////          getOnce = true;
+//        }),
+//      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(8.0,20,8.0,10),
         child: ListView(
           children: <Widget>[
-            Center(child: Text("물건 대여 신청",style: TextStyle(fontSize: 25,color:Colors.white))),
+            Center(child: Text("물건 정보 수정",style: TextStyle(fontSize: 25,color:Colors.white))),
             _AddItemFormSection(),
           ],
         ),
@@ -85,6 +88,8 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 
   File _image;
 
+  bool getOnce = true;
+
   void goToMapScreen() async {
     LatLng result = await Navigator.push(context, new MaterialPageRoute(
       builder: (BuildContext context) => MapPage(),
@@ -98,30 +103,29 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //        SnackBar(content: Text("$result"), duration: Duration(seconds: 3),));
   }
 
-  void uploadItem() async{
-    DocumentReference docR = Firestore.instance.collection('Items').document();
-    final FirebaseUser user = await _auth.currentUser();
-    if(imageUrls.isEmpty){
-      imageUrls.add(defUrl);
-    }
-    docR.setData({
+  void uploadItem(id) async{
+    DocumentReference docR = Firestore.instance.collection('Items').document(id);
+//    final FirebaseUser user = await _auth.currentUser();
+//    if(imageUrls.isEmpty){
+//      imageUrls.add(defUrl);
+//    }
+    docR.updateData({
       'category': _SelectedCategory,
       'name': itemNameController.text,
       'price': itemPriceController.text,
       'location': itemLocationController.text,
       'subCategory' :itemSubCategoryController.text,
-      'seller': user.uid,
+//      'seller': user.uid,
       'description': itemContentController.text,
 //      'imageUrl': imageUrl,
-      'available':true,
-      'imageUrl': imageUrls,
+      if(!imageUrls.isEmpty) 'imageUrl': imageUrls,
       'stime' : _stime,
       'etime' : _etime,
       'latitude': lattitude,
       'longitude': longitude,
-      'like': 0,
-      'likedUser': [],
-      'reply': []
+//      'like': 0,
+//      'likedUser': [],
+//      'reply': []
     }
     );
 
@@ -198,13 +202,47 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
     return await (await uploadTask.onComplete).ref.getDownloadURL();
   }
 
+  void updateScreen(data) {
+    if(getOnce){
+      itemCategoryController.text = data['category'];
+      itemSubCategoryController.text = data['subCategory'];
+      itemNameController.text = data['name'];
+      itemPriceController.text = data['price'];
+      itemLocationController.text = data['location'];
+//    itemDateController =  TextEditingController();
+      itemContentController.text = data['description'];
+
+      _SelectedCategory = data['category'];
+      int sLen = data['stime'].length;
+      int eLen = data['etime'].length;
+      print(data['stime'][sLen-1].seconds);
+      _stime[0] = DateTime.fromMillisecondsSinceEpoch(data['stime'][sLen-1].seconds*1000);
+      _etime[0] = DateTime.fromMillisecondsSinceEpoch(data['etime'][eLen-1].seconds*1000);
+
+      getOnce = false;
+    }
+
+  }
+
+  void deleteItem(id) {
+    DocumentReference docR = Firestore.instance.collection('Items').document(id);
+
+    docR.delete();
+  }
+
   List<String> _categories = <String>['물건', '사람', '공간', '노하우'];
 //  List _myCategories = [{'kor': '물건', 'en': 'goods'}, {'kor': '사람', 'id': 'manpower'}];
-  String _SelectedCategory = '물건';
+  String _SelectedCategory;// = '물건';
 
 
 
   Widget build(BuildContext context) {
+
+    DocumentSnapshot data = ModalRoute.of(context).settings.arguments;
+//    print(data.data['name']);
+    updateScreen(data);
+
+
 
     return Container(
         padding: EdgeInsets.all(16.0),
@@ -243,6 +281,7 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                                   value: _SelectedCategory,
 //                                  style: TextStyle(color: Colors.red),
                                   isDense: true,
+
 
                                   onChanged: (String newValue) {
                                     setState(() {
@@ -391,44 +430,44 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                         margin: EdgeInsets.symmetric(horizontal: 8.0),
                         child: Text("대여가능기간",style:TextStyle(color:Colors.white))
                     ),
-              SizedBox(width:10),
-              Text(formatDate.format(_stime[0])+" - ",style:TextStyle(color:Colors.white) ),
-              Text(formatDate.format(_etime[0]),style:TextStyle(color:Colors.white)),
+                    SizedBox(width:10),
+                    Text(formatDate.format(_stime[0])+" - ",style:TextStyle(color:Colors.white) ),
+                    Text(formatDate.format(_etime[0]),style:TextStyle(color:Colors.white)),
 // Text(etime.toString(),style:TextStyle(color:Colors.white)),
 
                     IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.calendar_today),
-                onPressed: () async {
-                  final List<DateTime> picked = await DateRagePicker
-                      .showDatePicker(
-                    context: context,
-                    initialFirstDate: new DateTime.now(),
-                    initialLastDate: new DateTime.now(),
-                    firstDate: new DateTime(2015),
-                    lastDate: new DateTime(2020),
-                  );
+                      color: Colors.white,
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: () async {
+                        final List<DateTime> picked = await DateRagePicker
+                            .showDatePicker(
+                          context: context,
+                          initialFirstDate: new DateTime.now(),
+                          initialLastDate: new DateTime.now(),
+                          firstDate: new DateTime(2015),
+                          lastDate: new DateTime(2020),
+                        );
 
-                  if (picked != null && picked.length == 2) {
-                    setState(() {
-                      _stime[0] = picked[0];
-                      _etime[0] = picked[1];
-                    });
+                        if (picked != null && picked.length == 2) {
+                          setState(() {
+                            _stime[0] = picked[0];
+                            _etime[0] = picked[1];
+                          });
 
 
-                    print(_stime[0]);
-                    print(picked[0]);
-                  }
+                          print(_stime[0]);
+                          print(picked[0]);
+                        }
 
-                  if (picked != null && picked.length == 1) {
-                    setState(() {
-                      _stime[0] = picked[0];
-                      _etime[0] = picked[0];
-                    });
-                  }
+                        if (picked != null && picked.length == 1) {
+                          setState(() {
+                            _stime[0] = picked[0];
+                            _etime[0] = picked[0];
+                          });
+                        }
 
-                },
-              ),
+                      },
+                    ),
 
                   ],
                 ),
@@ -479,7 +518,11 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
                   children: <Widget>[
                     Center(
                         child: _image == null
-                            ? Text("이미지를 선택해주세요", style: TextStyle(fontSize: 12.0,color:Colors.white),)
+                            ? Image.network(
+                                  data['imageUrl'][0],
+                                width: 200,
+                                height:120
+                              )
                             : Container(
                           height: 100,
                           width:  160,
@@ -494,20 +537,63 @@ class _AddItemFormSectionState extends State<_AddItemFormSection> {
 //                  Image.file(_image)
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(200,8,0,8),
-                  child: MaterialButton(
-                    child: Text('대여등록',style: TextStyle(color: Colors.white)),
-                    color: Colors.orangeAccent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,8,0,8),
+                      child: MaterialButton(
+                        child: Text('수정완료',style: TextStyle(color: Colors.white)),
+                        color: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        onPressed: () {
+                          uploadItem(data.documentID);
+                          getOnce = true;
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
-                      onPressed: () {
-                        uploadItem();
-                        Navigator.of(context).pop();
-                      },
-                  ),
-                ),
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,8,0,8),
+                      child: MaterialButton(
+                        child: Text('취소',style: TextStyle(color: Colors.white)),
+                        color: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        onPressed: () {
+                          getOnce = true;
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8,8,0,8),
+                      child: MaterialButton(
+                        child: Text('삭제',style: TextStyle(color: Colors.white)),
+                        color: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        onPressed: () {
+                          deleteItem(data.documentID);
+                          getOnce = true;
+                          Navigator.pop(context);
+//                          Navigator.popUntil(context, ModalRoute.withName('/home'));
+//                          Navigator.of(context).popUntil(ModalRoute.withName('/home'));
+
+                        },
+                      ),
+                    ),
+                  ],
+                )
+
 
               ],
             ),

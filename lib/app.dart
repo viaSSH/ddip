@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'init.dart';
 import 'home.dart';
-import 'search.dart';
+//import 'search.dart';
+import 'detail.dart';
+import 'addItem.dart';
+import 'myPage.dart';
+
+import'newSearch.dart';
+import 'map.dart';
+import 'chat.dart';
+import 'edit.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,11 +26,14 @@ class MyApp extends StatelessWidget {
           headline: TextStyle(color: Colors.white),
           body1: TextStyle(color: Colors.white),
           body2: TextStyle(color: Colors.white),
+          button: TextStyle(color: Colors.white),
+          display1: TextStyle(color: Colors.white),
 //          button: TextStyle(color: Colors.white),
         ),
 //        buttonTheme: ButtonThemeData(
-//
-//        )
+//          buttonColor:
+//        ),
+        fontFamily: 'Dohyun',
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
 
@@ -32,6 +43,12 @@ class MyApp extends StatelessWidget {
         '/init': (context) => InitPage(),
         '/home': (context) => HomePage(),
         '/search': (context) => SearchPage(),
+        '/detail': (context) => DetailPage(),
+        '/addItem': (context) => AddItemPage(),
+        '/myPage': (context) => MyPage(),
+        '/map': (context) => MapPage(),
+        '/chat': (context) => ChatPage(),
+        '/edit': (context) => EditItemPage(),
 
       },
     );
