@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
 //              Text("seller : " + args['seller'], style: TextStyle(color: Colors.black),),
 //              Text("item : " + args['uid'], style: TextStyle(color: Colors.black),),
 
-                buyer == seller ? Flexible(
+              buyer == seller ? Flexible(
                 child: StreamBuilder<QuerySnapshot>(
                     stream: Firestore.instance.collection('ChatRoom')
                         .where('seller', isEqualTo: seller)
@@ -130,37 +130,37 @@ class _ChatPageState extends State<ChatPage> {
                               print(text.data);
 
                               return Padding(
-                                padding: const EdgeInsets.fromLTRB(20,0,20,10),
-                                child: Column(
-                                  children: [
-                                    if(index==0)
-                                     Padding(
-                                          padding: EdgeInsets.fromLTRB(20,100,20,10),
-                                          child: Text("원하시는 대화방을 선택해주세요",style: TextStyle(color: Colors.grey, fontSize:20)),
-                                    ),
-                                    Container(
-                                    width: 350,
-                                    child: MaterialButton(
-                                    height: 50,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                  padding: const EdgeInsets.fromLTRB(20,0,20,10),
+                                  child: Column(
+                                      children: [
+                                      if(index==0)
+                                  Padding(
+                                  padding: EdgeInsets.fromLTRB(20,100,20,10),
+                              child: Text("원하시는 대화방을 선택해주세요",style: TextStyle(color: Colors.grey, fontSize:20)),
+                              ),
+                              Container(
+                              width: 350,
+                              child: MaterialButton(
+                              height: 50,
+                              shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
 //                                    side: BorderSide(color: Colors.orangeAccent, width: 2.0),
-                                    ),
-                                    color: Colors.orangeAccent,
-                                    child: Text("구매자 " + (index+1).toString() + " : " + text.data.toString() + "의 대화방으로 이동하기", style: TextStyle(color: Colors.white)),
-                                    onPressed: () {
-                                      print("press" + index.toString());
-                                      print(snapshot.data.documents[index]['seller']);
-                                      print(snapshot.data.documents[index]['buyer']);
+                              ),
+                              color: Colors.orangeAccent,
+                              child: Text("구매자 " + (index+1).toString() + " : " + text.data.toString() + "의 대화방으로 이동하기", style: TextStyle(color: Colors.white)),
+                              onPressed: () {
+                              print("press" + index.toString());
+                              print(snapshot.data.documents[index]['seller']);
+                              print(snapshot.data.documents[index]['buyer']);
 
-                                      setState(() {
-                                        buyer = snapshot.data.documents[index]['buyer'];
-                                      });
-                                    },
-                                  )
+                              setState(() {
+                              buyer = snapshot.data.documents[index]['buyer'];
+                              });
+                              },
                               )
-                                ]
-                                ),
+                              )
+                              ]
+                              ),
                               );
                             },
                           );
@@ -191,21 +191,20 @@ class _ChatPageState extends State<ChatPage> {
 //                          snapshot.data.documents.length
 //                          if(seller != buyer && (snapshot.hasData ) ){ //&&
                           if(seller != buyer && snapshot.data.documents.length==0 ){
-//                                  chatUid = 'chat_' + args['uid'];
-                                  chatUid = 'chat_' + DateTime.now().millisecondsSinceEpoch.toString();
+//                            chatUid = 'chat_' + args['uid'];
+                            chatUid = 'chat_' + DateTime.now().millisecondsSinceEpoch.toString();
+                            print("no data! " + chatUid);
 
-                                  print("no data! " + chatUid);
+                            var db = Firestore.instance;
+                            db.collection("ChatRoom").document(chatUid).setData({
+                              'itemUid': args['uid'],
+                              'buyer': buyer,
+                              'seller': seller,
+                              'messages': []
+                            });
 
-                                  var db = Firestore.instance;
-                                  db.collection("ChatRoom").document(chatUid).setData({
-                                    'itemUid': args['uid'],
-                                    'buyer': buyer,
-                                    'seller': seller,
-                                    'messages': []
-                                  });
-
-      //                      return Container(child: Text("nothing"),);
-                                }
+                            //                      return Container(child: Text("nothing"),);
+                          }
                         }
                     }
 
