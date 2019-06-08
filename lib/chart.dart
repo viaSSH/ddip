@@ -71,14 +71,12 @@ class ChartPage extends StatefulWidget {
       spacelen = totalEquals3+0.0;
       print("공간"+spacelen.toString());
 
-      spacelen == totalEquals3+0.0 ?
-          getOnce= true:
-          getOnce= false;
-
       dataMap.putIfAbsent("노하우", () => knowhowlen);
       dataMap.putIfAbsent("물건", () => goodslen);
       dataMap.putIfAbsent("사람", () => personlen);
       dataMap.putIfAbsent("공간", () => spacelen);
+
+      getOnce=true;
     }
     void totalMyItem() async {
 
@@ -114,15 +112,15 @@ class ChartPage extends StatefulWidget {
       mytotalEquals3 = myquerySnapshot3.documents.length;
       print("내공간"+ mytotalEquals3.toString());
 
-      getOnce=true;
+      getOnce1=true;
 
     }
 
     @override
     Widget build(BuildContext context) {
 
-      totalItem();
       if(!getOnce)totalItem();
+
 //Simple Usage
 //    PieChart(dataMap: dataMap);
 //    if(getOnce)
@@ -135,38 +133,38 @@ class ChartPage extends StatefulWidget {
     body:
         ListView(
         children: <Widget>[
-        Column(
-        children: [
-          SizedBox(height:30),
-          Text("전체 상품 비율"),
-          PieChart(
-            dataMap: dataMap,
-            legendFontColor: Colors.blueGrey[900],
-            legendFontSize: 14.0,
-            legendFontWeight: FontWeight.w500,
-            animationDuration: Duration(milliseconds: 800),
-            chartLegendSpacing: 32.0,
-            chartRadius: MediaQuery
-                .of(context)
-                .size
-                .width / 2.7,
-            showChartValuesInPercentage: true,
-            showChartValues: true,
-            chartValuesColor: Colors.blueGrey[900].withOpacity(0.9),
-          ),
-          SizedBox(height:20),
-          Text("내가 올린 상품"),
-          Container(
-            width:250,
-            height:250,
-            child: SimpleBarChart(
-              _createSampleData(),
-              // Disable animations for image tests.
-              animate: true,
+          Column(
+          children: [
+            SizedBox(height:30),
+            Text("전체 상품 비율"),
+            PieChart(
+              dataMap: dataMap,
+              legendFontColor: Colors.blueGrey[900],
+              legendFontSize: 14.0,
+              legendFontWeight: FontWeight.w500,
+              animationDuration: Duration(milliseconds: 800),
+              chartLegendSpacing: 32.0,
+              chartRadius: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 2.7,
+              showChartValuesInPercentage: true,
+              showChartValues: true,
+              chartValuesColor: Colors.blueGrey[900].withOpacity(0.9),
             ),
-          )
-        ],
-      ),
+            SizedBox(height:20),
+            Text("내가 올린 상품"),
+            Container(
+              width:250,
+              height:250,
+              child: SimpleBarChart(
+                _createSampleData(),
+                // Disable animations for image tests.
+                animate: true,
+              ),
+            )
+          ],
+        ),
       ]
     )
     );

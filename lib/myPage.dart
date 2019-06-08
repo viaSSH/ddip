@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 import 'detail.dart';
 import 'updateUser.dart';
 import 'dart:async';
@@ -11,7 +11,9 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 
 String defimg =
     "https://firebasestorage.googleapis.com/v0/b/final-4575e.appspot.com/o/logo.png?alt=media&token=8be50df6-ef03-4c85-90e6-856ea9d6cb5e";
-
+var formatter = new DateFormat('yyyy-MM-dd(EEE)');
+var formatterHour = DateFormat('yyyy-MM-dd(EEE) hh:mm');
+List<dynamic> stime = null;
 class MyPage extends StatefulWidget {
   final FirebaseUser user;
 
@@ -222,8 +224,8 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
                               stream:
                                   item.expandedValue == 0
                                     ? Firestore.instance
-                                    .collection('Items')
-                                    .where('buyer', arrayContains: userUID)
+                                    .collection('Transactions')
+                                    .where('buyer', isEqualTo: userUID)
                                     .snapshots()
                                   : item.expandedValue == 1
                                       ? Firestore.instance
@@ -289,12 +291,14 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
               child: ConstrainedBox(
                 constraints: BoxConstraints.expand(),
                 child: Ink.image(
-                  image: NetworkImage(document['imageUrl'][0]),
+                  image: index == 0?
+                  NetworkImage(document['imageUrl']):
+                  NetworkImage(document['imageUrl'][0]),
                   fit: BoxFit.cover,
                   child: InkWell(
                     onTap: () {
-                      print( document['rendtStart']);
-                      print(document);
+                      index == 0?
+                      _showalert(document):
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -312,6 +316,102 @@ class _UserInfoSectionState extends State<_UserInfoSection> {
                   style: TextStyle(color: Colors.black, fontSize: 10))),
         ]);
   }
+  void _showalert(DocumentSnapshot document){
+    final f = new DateFormat('yyyy-MM-dd hh:mm');
+    AlertDialog dialog = AlertDialog(
+        content: Container(
+            width:250.0,
+            height:300.0,
+            child:Column(
+                children:[
+                  Container(
+//                    color: Colors.orangeAccent,
+                    width:250.0,
+                    height:100.0,
+                    child:Text("내가 대여한 물품",style:TextStyle(fontSize: 20.0)),
+                    alignment: Alignment.center,
+                  ),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+                        Text("물품명: " + document['name']),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+//                        Text("가격: " + document['price'] + "원"),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        SizedBox(width:10.0),
+//                        Text("거래장소: " + document['location']),
+                      ]
+                  ),
+                  SizedBox(height:15.0),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children:[
+                        Icon(Icons.calendar_today),
+                        SizedBox(width:10.0),
+                        Column(
+                            children:[
+                              Text("대여시작",style:TextStyle(fontSize: 12.0)),
+                              Text("대여종료",style:TextStyle(fontSize: 12.0)),
+                            ]
+                        ),
+                        SizedBox(width:10.0),
+                        Column(
+                            children:[
+
+//                        Text(f.format(new DateTime.fromMillisecondsSinceEpoch(document['rentStart'])))
+
+                              Text('${formatter.format((document['rentStart']).toDate())}'),
+                              Text('${formatter.format((document['rentEnd']).toDate())}',style :TextStyle(color:Colors.red))
+                            ]
+                        )
+                      ]
+                  ),
+
+                  SizedBox(height:10.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        child: Text("대여종료",style:TextStyle(color:Colors.white,fontSize: 15.0)),
+                        color: Colors.orangeAccent,
+                        onPressed: (){
+                          deleteItem(document.documentID);
+                          getOnce = true;
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  )
+                ]
+            )
+        ),
+        actions: <Widget>[
+
+        ]
+    );
+    showDialog(context:context,
+        child:dialog);
+  }
+}
+
+DateTime Date(document) {
 }
 
 class Item {
@@ -341,4 +441,10 @@ List<Item> generateItems(int numberOfItems) {
               )
             : Item(headerValue: '찜한상품', expandedValue: 2);
   });
+}
+
+void deleteItem(id) {
+  DocumentReference docR = Firestore.instance.collection('Transactions').document(id);
+
+  docR.delete();
 }

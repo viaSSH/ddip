@@ -22,13 +22,13 @@ class _InitPageState extends State<InitPage> {
     return Scaffold(
       body: ListView(
           children: <Widget>[
-            RaisedButton(
-              child: Text("move to main page"),
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
-            ),
-            SizedBox(height: 100.0),
+//            RaisedButton(
+//              child: Text("move to main page"),
+//              onPressed: () {
+//                Navigator.pushNamed(context, '/home');
+//              },
+//            ),
+            SizedBox(height: 120.0),
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(0),
@@ -62,6 +62,10 @@ class _InitPageState extends State<InitPage> {
               ),
             ),
             SizedBox(height:10),
+            Center(child: Padding(
+              padding: const EdgeInsets.fromLTRB(8.0,250,8.0,0),
+              child: Text('made by mobile_app_class ddip team', style: TextStyle(color: Colors.orange[200]))
+            )),
 //            Center(
 //              child: Container(
 //                  child: MaterialButton(
